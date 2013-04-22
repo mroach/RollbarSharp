@@ -18,7 +18,7 @@ namespace RollbarSharp.Serialization
             Trace = trace;
         }
     }
-
+   [json]
     [JsonObject(MemberSerialization.OptIn)]
     public class MessageBodyModel : BodyModel
     {

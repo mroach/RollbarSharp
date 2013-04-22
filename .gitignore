@@ -5,18 +5,18 @@ obj
 *.cache
 *.log
 *.resharper
-src/RollbarSharp/packages/
+packages
 
 # ignore specwatchr
-src/RollbarSharp/red.png
-src/RollbarSharp/green.png
-src/RollbarSharp/sidekick.bat
-src/RollbarSharp/sidekickapp.cs
-src/RollbarSharp/sidekickapp.exe
-src/RollbarSharp/watcher_dot_net.rb
-src/RollbarSharp/watchr.bat
-src/RollbarSharp/sidekick.bat
-src/RollbarSharp/sidekickapp.cs
-src/RollbarSharp/sidekickapp.exe
+src/red.png
+src/green.png
+src/sidekick.bat
+src/sidekickapp.cs
+src/sidekickapp.exe
+src/watcher_dot_net.rb
+src/watchr.bat
+src/sidekick.bat
+src/sidekickapp.cs
+src/sidekickapp.exe
 specwatchr-usage.txt
 dotnet.watchr.rb
