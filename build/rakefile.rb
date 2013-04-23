@@ -73,7 +73,7 @@ nuspec do |nuspec|
   nuspec.language = "en-US"
   nuspec.licenseUrl = "https://github.com/mroach/RollbarSharp/blob/master/LICENSE.txt"
   nuspec.projectUrl = "https://github.com/mroach/rollbarsharp"
-  nuspec.dependency "Newtonsoft.Json", "4.0"
+  nuspec.dependency "Newtonsoft.Json", "5.0"
   nuspec.tags = "rollbar"
   nuspec.working_directory = PUBLISH_DIR
   nuspec.output_file = "#{APPLICATION_NAME}.nuspec"
@@ -94,8 +94,7 @@ end
 
 nugetpush do |nuget|
   nuget.command     = "nuget"
-  nuget.packagename = File.join(BUILD_DIR, "#{APPLICATION_NAME}.#{current_build_number}.nupkg")
-  nuget.create_only = true
+  nuget.package     = "#{APPLICATION_NAME}.#{current_build_number}.nupkg"
 end
 
 task :nuget_bundle => [:build, :nuspec, :copy, :nugetpack]

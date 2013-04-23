@@ -1,5 +1,10 @@
 # CHANGELOG
 
+# 0.1.2.0 (2013-04-23)
+
+* Fixed json.net dependency version
+
+
 # 0.1.1.0 (2013-04-23)
 
 * Added web.config transform
