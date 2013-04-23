@@ -9,68 +9,240 @@ using RollbarSharp.Serialization;
 
 namespace RollbarSharp
 {
+    /// <summary>
+    /// The Rollbar client. This is where applications will interact
+    /// with Rollbar. There shouldn't be any need for them to deal
+    /// with any objects aside from this
+    /// </summary>
     public class RollbarClient
     {
+        /// <summary>
+        /// Signature for the handler fired when the request is complete
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="args"></param>
+        public delegate void RequestCompletedEventHandler(object source, RequestCompletedEventArgs args);
+
         public Configuration Configuration { get; protected set; }
 
-        public NoticeModelBuilder NoticeBuilder { get; protected set; }
+        public DataModelBuilder DataBuilder { get; protected set; }
+
+        public event RequestCompletedEventHandler RequestCompleted;
+
 
         public RollbarClient(Configuration configuration)
         {
             Configuration = configuration;
-            NoticeBuilder = new NoticeModelBuilder(Configuration);
+            DataBuilder = new DataModelBuilder(Configuration);
         }
 
+        /// <summary>
+        /// Creates a new RollbarClient using the given access token
+        /// and all default <see cref="Configuration"/> values
+        /// </summary>
+        /// <param name="accessToken"></param>
         public RollbarClient(string accessToken)
             : this(new Configuration(accessToken))
         {
         }
 
+        /// <summary>
+        /// Creates a new RollbarClient using configuration values from app/web.config
+        /// </summary>
         public RollbarClient()
             : this(Configuration.CreateFromAppConfig())
         {
         }
 
-        public void SendException(Exception ex)
+        /// <summary>
+        /// Sends an exception using the "critical" level
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="title"></param>
+        public void SendCriticalException(Exception ex, string title = null)
         {
-            var notice = NoticeBuilder.CreateExceptionNotice(ex);
+            SendException(ex, title, "critical");
+        }
+
+        /// <summary>
+        /// Sends an exception using the "error" level
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="title"></param>
+        public void SendErrorException(Exception ex, string title = null)
+        {
+            SendException(ex, title, "error");
+        }
+
+        /// <summary>
+        /// Sents an exception using the "warning" level
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="title"></param>
+        public void SendWarningException(Exception ex, string title = null)
+        {
+            SendException(ex, title, "warning");
+        }
+
+        /// <summary>
+        /// Sends the given <see cref="Exception"/> to Rollbar including
+        /// the stack trace. 
+        /// </summary>
+        /// <param name="ex"></param>
+        /// <param name="title"></param>
+        /// <param name="level">Default is "error". "critical" and "warning" may also make sense to use.</param>
+        public void SendException(Exception ex, string title = null, string level = "error")
+        {
+            var notice = DataBuilder.CreateExceptionNotice(ex, title, level);
             Send(notice);
         }
 
-        public void SendMessage(string message, IDictionary<string, string> customData = null)
+        /// <summary>
+        /// Sends a text notice using the "critical" level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="customData"></param>
+        public void SendCriticalMessage(string message, IDictionary<string, string> customData = null)
         {
-            var notice = NoticeBuilder.CreateMessageNotice(message, customData);
+            SendMessage(message, "critical", customData);
+        }
+
+        /// <summary>
+        /// Sents a text notice using the "error" level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="customData"></param>
+        public void SendErrorMessage(string message, IDictionary<string, string> customData = null)
+        {
+            SendMessage(message, "error", customData);
+        }
+
+        /// <summary>
+        /// Sends a text notice using the "warning" level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="customData"></param>
+        public void SendWarningMessage(string message, IDictionary<string, string> customData = null)
+        {
+            SendMessage(message, "warning", customData);
+        }
+
+        /// <summary>
+        /// Sends a text notice using the "info" level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="customData"></param>
+        public void SendInfoMessage(string message, IDictionary<string, string> customData = null)
+        {
+            SendMessage(message, "info", customData);
+        }
+
+        /// <summary>
+        /// Sends a text notice using the "debug" level
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="customData"></param>
+        public void SendDebugMessage(string message, IDictionary<string, string> customData = null)
+        {
+            SendMessage(message, "debug", customData);
+        }
+
+        /// <summary>
+        /// Sents a text notice using the given level of severity
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="level"></param>
+        /// <param name="customData"></param>
+        public void SendMessage(string message, string level, IDictionary<string, string> customData = null)
+        {
+            var notice = DataBuilder.CreateMessageNotice(message, level, customData);
             Send(notice);
         }
 
-        public void Send(NoticeModel notice)
+        public void Send(DataModel data)
         {
-            var payload = JsonConvert.SerializeObject(notice, Formatting.Indented);
-            var response = HttpPost(payload);
+            var payload = new PayloadModel(Configuration.AccessToken, data);
+            HttpPost(payload);
         }
 
-        private string HttpPost(string payload)
+        /// <summary>
+        /// Serialize the given object for transmission
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public string Serialize(object data)
         {
+            return JsonConvert.SerializeObject(data, Configuration.JsonSettings);
+        }
+
+        private void HttpPost(PayloadModel payload)
+        {
+            var payloadString = Serialize(payload);
+            HttpPost(payloadString);
+        }
+
+        protected void HttpPost(string payload)
+        {
+            // convert the json payload to bytes for transmission
+            var payloadBytes = Encoding.GetEncoding(Configuration.Encoding).GetBytes(payload);
+
             var request = (HttpWebRequest) WebRequest.Create(Configuration.Endpoint);
             request.ContentType = "application/json";
             request.Method = "POST";
-
-            var payloadBytes = Encoding.GetEncoding(Configuration.Encoding).GetBytes(payload);
-
             request.ContentLength = payloadBytes.Length;
-
+            
             using (var stream = request.GetRequestStream())
             {
                 stream.Write(payloadBytes, 0, payloadBytes.Length);
                 stream.Close();
             }
+            
+            request.BeginGetResponse(HttpRequestCallback, request);
+        }
 
-            var response = (HttpWebResponse) request.GetResponse();
-            using (var stream = response.GetResponseStream())
-            using (var reader = new StreamReader(stream))
+        protected void HttpRequestCallback(IAsyncResult result)
+        {
+            var request = result.AsyncState as HttpWebRequest;
+
+            if (request == null)
+                return;
+
+            WebResponse response;
+
+            try
             {
-                return reader.ReadToEnd();
+                response = request.EndGetResponse(result);
             }
+            catch (WebException ex)
+            {
+                response = ex.Response;
+            }
+
+            OnRequestCompleted(response);
+        }
+
+        protected void OnRequestCompleted(WebResponse response)
+        {
+            var responseCode = (int) ((HttpWebResponse) response).StatusCode;
+            string responseText;
+
+            using (var stream = response.GetResponseStream())
+            {
+                if (stream == null)
+                    return;
+
+                using (var reader = new StreamReader(stream))
+                {
+                    responseText = reader.ReadToEnd();
+                }
+            }
+
+            if (RequestCompleted == null)
+                return;
+
+            var result = new Result(responseCode, responseText);
+            var args = new RequestCompletedEventArgs(result);
+            RequestCompleted(result, args);
         }
     }
 }

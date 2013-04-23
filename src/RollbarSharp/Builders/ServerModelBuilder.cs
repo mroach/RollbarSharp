@@ -6,6 +6,12 @@ namespace RollbarSharp.Builders
 {
     public static class ServerModelBuilder
     {
+        /// <summary>
+        /// Creates a <see cref="ServerModel"/> using data from the given
+        /// <see cref="HttpRequest"/>. Finds: HTTP Host, Server Name, Application Physical Path
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public static ServerModel CreateFromHttpRequest(HttpRequest request)
         {
             var host = request.ServerVariables.Get("HTTP_HOST");
@@ -21,6 +27,10 @@ namespace RollbarSharp.Builders
             return new ServerModel { Host = host, Root = root };
         }
 
+        /// <summary>
+        /// Create a <see cref="ServerModel"/> using the current <see cref="HttpRequest"/>
+        /// </summary>
+        /// <returns></returns>
         public static ServerModel CreateFromCurrentRequest()
         {
             var cx = HttpContext.Current;

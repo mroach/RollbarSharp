@@ -20,3 +20,7 @@ src/sidekickapp.cs
 src/sidekickapp.exe
 specwatchr-usage.txt
 dotnet.watchr.rb
+
+# ignore publish stuff
+build/publish/lib/*/*.dll
+build/*.nupkg

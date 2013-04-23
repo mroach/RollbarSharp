@@ -1,0 +1,6 @@
+<configuration>
+  <appSettings>
+    <add key="Rollbar.AccessToken" value="YOUR_TOKEN_HERE" />
+    <add key="Rollbar.Environment" value="development" />
+  </appSettings>
+</configuration>

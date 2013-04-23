@@ -19,8 +19,7 @@ namespace RollbarSharp.Tests.Serialization
         {
             try
             {
-                int x = 0, y = 1;
-                var z = y/x;
+                CreateException();
             }
             catch (Exception ex)
             {
@@ -29,6 +28,12 @@ namespace RollbarSharp.Tests.Serialization
                 it["should have excepted Class"] = () => model.Class.should_be("DivideByZeroException");
                 it["should have Message"] = () => model.Message.should_not_be_empty();
             }
+        }
+
+        private void CreateException()
+        {
+            var x = 0;
+            var y = 1 / x;
         }
     }
 }

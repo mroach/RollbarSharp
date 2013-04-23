@@ -3,7 +3,7 @@
 namespace RollbarSharp.Serialization
 {
     /// <summary>
-    /// Object describing the server environment for the server associated with the item being reported
+    /// Describes the server and code environment.
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class ServerModel

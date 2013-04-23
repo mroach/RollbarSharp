@@ -4,9 +4,9 @@ using Newtonsoft.Json;
 namespace RollbarSharp.Serialization
 {
     /// <summary>
-    /// Object describing the request that triggered the item being reported.
+    /// Describes the HTTP request that triggered the item being reported.
     /// </summary>
-    /// <remarks>The query_string and body parameters have been omitted since they are redundant</remarks>
+    /// <remarks>The query_string and body parameters have been omitted since they seem redundant to GET and POST</remarks>
     [JsonObject(MemberSerialization.OptIn)]
     public class RequestModel
     {
@@ -51,5 +51,17 @@ namespace RollbarSharp.Serialization
         /// </summary>
         [JsonProperty("user_ip")]
         public string UserIp { get; set; }
+
+        /// <summary>
+        /// Initialize a new <see cref="RequestModel"/> and initialize Dictionary
+        /// properties for easier access.
+        /// </summary>
+        public RequestModel()
+        {
+            Headers = new Dictionary<string, string>();
+            Parameters = new Dictionary<string, string>();
+            QueryStringParameters = new Dictionary<string, string>();
+            PostParameters = new Dictionary<string, string>();
+        }
     }
 }

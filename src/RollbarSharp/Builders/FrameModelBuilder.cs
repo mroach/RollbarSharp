@@ -16,7 +16,7 @@ namespace RollbarSharp.Builders
         /// <summary>
         /// Recursively add internal exceptions to the stack trace
         /// </summary>
-        public static bool IncludeInternalExceptions = true;
+        public static bool IncludeInnerExceptions = true;
 
         /// <summary>
         /// Converts the Exception's stack trace to simpler models.
@@ -39,15 +39,18 @@ namespace RollbarSharp.Builders
                 var fileName = frame.GetFileName();
                 var methodParams = method.GetParameters();
 
+                // when the line number is zero, you can try using the IL offset
                 if (lineNumber == 0)
                     lineNumber = frame.GetILOffset();
 
                 if (lineNumber == -1)
                     lineNumber = frame.GetNativeOffset();
 
+                // line numbers less than 0 are not accepted
                 if (lineNumber < 0)
                     lineNumber = 0;
 
+                // file names aren't always available, so use the type name instead, if possible
                 if (string.IsNullOrEmpty(fileName))
                 {
                     fileName = method.ReflectedType != null
@@ -57,6 +60,7 @@ namespace RollbarSharp.Builders
 
                 var methodName = method.Name;
 
+                // add method parameters to the method name. helpful for resolving overloads.
                 if (methodParams.Length > 0)
                 {
                     var paramDesc = string.Join(", ", methodParams.Select(p => p.ParameterType + " " + p.Name));
@@ -66,9 +70,14 @@ namespace RollbarSharp.Builders
                 lines.Add(new FrameModel(fileName, lineNumber, methodName));
             }
 
-            if (IncludeInternalExceptions && exception.InnerException != null)
+            // add the inner exception if we have one
+            if (IncludeInnerExceptions && exception.InnerException != null)
             {
-                lines.Add(new FrameModel("-- INNER EXCEPTION " + exception.InnerException.GetType() + " --"));
+                // add a line to separate the inner exception
+                // use the inner exception's class name as the method name
+                var innerExType = exception.InnerException.GetType().Name;
+                lines.Add(new FrameModel("-- INNER EXCEPTION " + exception.InnerException.GetType() + " --", method: innerExType));
+
                 lines.AddRange(CreateFramesFromException(exception.InnerException));
             }
 

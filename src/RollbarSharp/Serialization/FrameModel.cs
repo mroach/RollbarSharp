@@ -2,6 +2,10 @@
 
 namespace RollbarSharp.Serialization
 {
+    /// <summary>
+    /// Represents a frame of the backtrace. Some fields don't apply to
+    /// .NET but we include them anyway for completeness.
+    /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class FrameModel
     {
@@ -43,6 +47,10 @@ namespace RollbarSharp.Serialization
             Method = method;
         }
         
+        /// <summary>
+        /// Produce a formatted stack trace line similar to what you see in yellow screens of death
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             var s = Code ?? Method;

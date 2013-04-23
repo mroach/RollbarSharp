@@ -3,7 +3,7 @@
 namespace RollbarSharp.Serialization
 {
     /// <summary>
-    /// Object describing the notifier that reported this item i.e. this .NET binding
+    /// Describes the notifier library/code that reported this item i.e. this .NET binding
     /// </summary>
     [JsonObject(MemberSerialization.OptIn)]
     public class NotifierModel

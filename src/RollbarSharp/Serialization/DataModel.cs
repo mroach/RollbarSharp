@@ -3,7 +3,7 @@
 namespace RollbarSharp.Serialization
 {
     [JsonObject(MemberSerialization.OptIn)]
-    public class NoticeModel
+    public class DataModel
     {
         /// <summary>
         /// Running environment. E.g. production, staging, development
@@ -11,6 +11,7 @@ namespace RollbarSharp.Serialization
         [JsonProperty("environment")]
         public string Environment { get; set; }
 
+        [JsonProperty("body")]
         public BodyModel Body { get; set; }
 
         /// <summary>
@@ -81,5 +82,11 @@ namespace RollbarSharp.Serialization
         /// </summary>
         [JsonProperty("title")]
         public string Title { get; set; }
+
+        public DataModel(string level, BodyModel body)
+        {
+            Level = level;
+            Body = body;
+        }
     }
 }

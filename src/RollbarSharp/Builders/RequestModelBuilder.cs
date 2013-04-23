@@ -8,6 +8,11 @@ namespace RollbarSharp.Builders
 {
     public static class RequestModelBuilder
     {
+        /// <summary>
+        /// Converts the current standard <see cref="HttpRequest"/> to a <see cref="RequestModel"/>
+        /// Copies over: URL, HTTP method, HTTP headers, query string params, POST params, user IP, route params
+        /// </summary>
+        /// <returns></returns>
         public static RequestModel CreateFromCurrentRequest()
         {
             var cx = HttpContext.Current;
@@ -15,6 +20,12 @@ namespace RollbarSharp.Builders
             return cx == null ? new RequestModel() : CreateFromHttpRequest(cx.Request);
         }
 
+        /// <summary>
+        /// Converts a standard <see cref="HttpRequest"/> to a <see cref="RequestModel"/>
+        /// Copies over: URL, HTTP method, HTTP headers, query string params, POST params, user IP, route params
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         public static RequestModel CreateFromHttpRequest(HttpRequest request)
         {
             var m = new RequestModel();
@@ -33,6 +44,11 @@ namespace RollbarSharp.Builders
             return m;
         }
         
+        /// <summary>
+        /// Convert a <see cref="NameValueCollection"/> to a dictionary which is far more usable.
+        /// </summary>
+        /// <param name="col"></param>
+        /// <returns></returns>
         internal static IDictionary<string, string> CollectionToDictionary(NameValueCollection col)
         {
             if (col == null || col.Count == 0)
