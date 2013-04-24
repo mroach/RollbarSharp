@@ -23,12 +23,24 @@ namespace RollbarSharp
         /// <param name="args"></param>
         public delegate void RequestCompletedEventHandler(object source, RequestCompletedEventArgs args);
 
+        public delegate void RequestSendingEventHandler(object source, RequestStartingEventArgs args);
+
         public Configuration Configuration { get; protected set; }
 
+        /// <summary>
+        /// Builds Rollbar requests from <see cref="Exception"/>s or text messages
+        /// </summary>
         public DataModelBuilder DataBuilder { get; protected set; }
 
-        public event RequestCompletedEventHandler RequestCompleted;
+        /// <summary>
+        /// Fires just before sending the final JSON payload to Rollbar
+        /// </summary>
+        public event RequestSendingEventHandler RequestStarting;
 
+        /// <summary>
+        /// Fires when we've received a response from Rollbar
+        /// </summary>
+        public event RequestCompletedEventHandler RequestCompleted;
 
         public RollbarClient(Configuration configuration)
         {
@@ -190,7 +202,9 @@ namespace RollbarSharp
             request.ContentType = "application/json";
             request.Method = "POST";
             request.ContentLength = payloadBytes.Length;
-            
+
+            OnRequestStarting(this, payload);
+
             using (var stream = request.GetRequestStream())
             {
                 stream.Write(payloadBytes, 0, payloadBytes.Length);
@@ -219,6 +233,14 @@ namespace RollbarSharp
             }
 
             OnRequestCompleted(response);
+        }
+
+        protected void OnRequestStarting(object source, string payload)
+        {
+            if (RequestStarting == null)
+                return;
+
+            RequestStarting(source, new RequestStartingEventArgs(payload));
         }
 
         protected void OnRequestCompleted(WebResponse response)

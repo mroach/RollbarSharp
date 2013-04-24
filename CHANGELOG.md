@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.1.4.0 (2013-04-24)
+
+* Added RequestStarting event to RollbarClient so you can log the JSON posted to Rollbar
+
 
 ## 0.1.3.0 (2013-04-24)
 
