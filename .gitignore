@@ -24,3 +24,4 @@ dotnet.watchr.rb
 # ignore publish stuff
 build/publish/lib/*/*.dll
 build/*.nupkg
+build/publish/*.nuspec

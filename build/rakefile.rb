@@ -31,6 +31,7 @@ end
 def release_notes
   changelog = IO.read(File.join(ROOT, 'CHANGELOG.md'))
   match = /#\s+(#{Regexp.quote(current_build_number)})[^\r\n]+[\r\n]+(?<text>[^#\z]+)/.match(changelog)
+  return "" if match.nil?
   match[:text].strip
 end
 
@@ -62,13 +63,18 @@ msbuild :build => [:assemblyinfo] do |msb|
   msb.verbosity = "minimal"
 end
 
-desc "create the nuget spec file"
+desc "Create the nuget spec file"
 nuspec do |nuspec|
+
+  raise "You haven't updated the changelog with v#{current_build_number} release notes" if release_notes.empty?
+
+  puts "Version #{current_build_number} release_notes\n#{release_notes}"
+
   nuspec.id = APPLICATION_NAME
   nuspec.version = current_build_number
   nuspec.authors = "Michael Roach"
   nuspec.description = "Bindings for the Rollbar (rollbar.com) error reporting system"
-  #nuspec.releaseNotes = release_notes -- not yet supported by albacore. sent a pull request...
+  nuspec.release_notes = release_notes
   nuspec.title = APPLICATION_NAME
   nuspec.language = "en-US"
   nuspec.licenseUrl = "https://github.com/mroach/RollbarSharp/blob/master/LICENSE.txt"
@@ -79,6 +85,7 @@ nuspec do |nuspec|
   nuspec.output_file = "#{APPLICATION_NAME}.nuspec"
 end
 
+desc "Copy DLLs to the nuget publish directory"
 task :copy do
   cp_r(File.join(BIN_DIR, "RollbarSharp.dll"), File.join(PUBLISH_DIR, 'lib/net40/'))
 end
@@ -92,9 +99,11 @@ nugetpack do |nuget|
   nuget.symbols     = false
 end
 
+desc "Push nuget package to nuget.org"
 nugetpush do |nuget|
   nuget.command     = "nuget"
   nuget.package     = "#{APPLICATION_NAME}.#{current_build_number}.nupkg"
 end
 
-task :nuget_bundle => [:build, :nuspec, :copy, :nugetpack]
+desc "Build, generate nuspec, copy DLLs, create nuget package"
+task :nugetify => [:build, :nuspec, :copy, :nugetpack]
