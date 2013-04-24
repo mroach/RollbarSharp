@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
@@ -37,6 +38,12 @@ namespace RollbarSharp.Builders
             m.QueryStringParameters = CollectionToDictionary(request.QueryString);
             
             m.PostParameters = CollectionToDictionary(request.Form);
+
+            // add posted files to the post collection
+            if (request.Files.Count > 0)
+                foreach (var file in DescribePostedFiles(request.Files))
+                    m.PostParameters.Add(file.Key, "FILE: " + file.Value);
+
             m.UserIp = request.UserHostAddress;
 
             m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString());
@@ -55,6 +62,25 @@ namespace RollbarSharp.Builders
                 return new Dictionary<string, string>();
 
             return col.AllKeys.ToDictionary(key => key, key => col[key]);
+        }
+
+        /// <summary>
+        /// Create a dictionary describing the files posted.
+        /// The key is the form field name, value the file name, mime type, and size in bytes.
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        internal static IDictionary<string, string> DescribePostedFiles(HttpFileCollection files)
+        {
+            return files.AllKeys.ToDictionary(k => k, k => DescribePostedFile(files[k]));
+        }
+
+        internal static string DescribePostedFile(HttpPostedFile file)
+        {
+            if (file.ContentLength == 0 && string.IsNullOrEmpty(file.FileName))
+                return "[empty]";
+
+            return string.Format("{0} ({1}, {2} bytes)", file.FileName, file.ContentType, file.ContentLength);
         }
     }
 }
