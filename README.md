@@ -14,7 +14,7 @@ As of now this binding is only for .NET 4. If there's a widespread desire for .N
 
 The easiest way to get going is to add the `Rollbar.AccessToken` item to your app settings.
 
-```
+```xml
 <configuration>
   <appSettings>
     <add key="Rollbar.AccessToken" value="YOUR_TOKEN_HERE"/>
@@ -25,7 +25,7 @@ The easiest way to get going is to add the `Rollbar.AccessToken` item to your ap
 
 ### As an ASP.NET Filter
 
-```
+```csharp
 public class RollbarExceptionFilter : IExceptionFilter
 {
     public void OnException(ExceptionContext filterContext)
@@ -40,13 +40,13 @@ public class RollbarExceptionFilter : IExceptionFilter
 
 And then in `Global.asax.cs` you can do
 
-```
+```csharp
 GlobalFilters.Filters.Add(new RollbarExceptionFilter());
 ```
 
 Or if you're using an inversion of control system that supports binding filters, you could do it there. This is an example with [Ninject](http://www.ninject.org/). You could even dependency-inject the `RollbarClient` if you want to create it in your own factory method.
 
-```
+```csharp
 kernel.BindFilter<RollbarExceptionFilter>(FilterScope.Global, 10).InSingletonScope();
 ```
 
@@ -55,7 +55,7 @@ The `OnException` method could instead be used verbatim inside a `Controller` if
 
 ### As an ASP.NET application event handler (Global.asax.cs)
 
-```
+```csharp
 protected void Application_Error(object sender, EventArgs e)
 {
     var exception = (HttpException) Server.GetLastError();
