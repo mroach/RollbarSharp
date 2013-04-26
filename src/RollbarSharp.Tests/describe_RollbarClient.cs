@@ -8,7 +8,7 @@ namespace RollbarSharp.Tests
         public void when_serializing_message_notice()
         {
             var client = new RollbarClient();
-            var notice = client.DataBuilder.CreateMessageNotice("Hello");
+            var notice = client.NoticeBuilder.CreateMessageNotice("Hello");
             
             notice.Server.Host = "miker";
             notice.Request.Url = "http://localhost/hej";
@@ -35,7 +35,7 @@ namespace RollbarSharp.Tests
                 exception = ex;
             }
 
-            var notice = client.DataBuilder.CreateExceptionNotice(exception);
+            var notice = client.NoticeBuilder.CreateExceptionNotice(exception);
             notice.Server.Host = "miker";
             notice.Request.Url = "http://localhost/hej";
             notice.Request.Method = "GET";

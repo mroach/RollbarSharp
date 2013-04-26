@@ -30,7 +30,8 @@ namespace RollbarSharp
         /// <summary>
         /// Builds Rollbar requests from <see cref="Exception"/>s or text messages
         /// </summary>
-        public DataModelBuilder DataBuilder { get; protected set; }
+        /// <remarks>This only builds the body of the request, not the whole notice payload</remarks>
+        public DataModelBuilder NoticeBuilder { get; protected set; }
 
         /// <summary>
         /// Fires just before sending the final JSON payload to Rollbar
@@ -45,7 +46,7 @@ namespace RollbarSharp
         public RollbarClient(Configuration configuration)
         {
             Configuration = configuration;
-            DataBuilder = new DataModelBuilder(Configuration);
+            NoticeBuilder = new DataModelBuilder(Configuration);
         }
 
         /// <summary>
@@ -105,7 +106,7 @@ namespace RollbarSharp
         /// <param name="level">Default is "error". "critical" and "warning" may also make sense to use.</param>
         public void SendException(Exception ex, string title = null, string level = "error")
         {
-            var notice = DataBuilder.CreateExceptionNotice(ex, title, level);
+            var notice = NoticeBuilder.CreateExceptionNotice(ex, title, level);
             Send(notice);
         }
 
@@ -167,7 +168,7 @@ namespace RollbarSharp
         /// <param name="customData"></param>
         public void SendMessage(string message, string level, IDictionary<string, object> customData = null)
         {
-            var notice = DataBuilder.CreateMessageNotice(message, level, customData);
+            var notice = NoticeBuilder.CreateMessageNotice(message, level, customData);
             Send(notice);
         }
 
