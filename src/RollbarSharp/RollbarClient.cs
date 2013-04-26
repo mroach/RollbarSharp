@@ -188,7 +188,7 @@ namespace RollbarSharp
             return JsonConvert.SerializeObject(data, Configuration.JsonSettings);
         }
 
-        private void HttpPost(PayloadModel payload)
+        protected void HttpPost(PayloadModel payload)
         {
             var payloadString = Serialize(payload);
             HttpPost(payloadString);

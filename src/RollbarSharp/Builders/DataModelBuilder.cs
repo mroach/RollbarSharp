@@ -10,6 +10,11 @@ namespace RollbarSharp.Builders
     {
         public Configuration Configuration { get; protected set; }
 
+        public DataModelBuilder()
+            :this(Configuration.CreateFromAppConfig())
+        {
+        }
+
         public DataModelBuilder(Configuration configuration)
         {
             Configuration = configuration;
