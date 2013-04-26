@@ -15,6 +15,20 @@ namespace RollbarSharp.Serialization
         public string Host { get; set; }
 
         /// <summary>
+        /// Name of the computer running the code
+        /// </summary>
+        /// <remarks>NOTE: This isn't an official property but it shows up</remarks>
+        [JsonProperty("machine")]
+        public string Machine { get; set; }
+
+        /// <summary>
+        /// Server software running the code. e.g. IIS 
+        /// </summary>
+        /// <remarks>NOTE: This isn't an official property but it shows up</remarks>
+        [JsonProperty("software")]
+        public string Software { get; set; }
+
+        /// <summary>
         /// The path to the application code root, not including the final slash
         /// </summary>
         [JsonProperty("root")]

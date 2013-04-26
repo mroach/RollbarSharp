@@ -24,7 +24,10 @@ namespace RollbarSharp.Builders
             if (string.IsNullOrEmpty(root))
                 root = HttpRuntime.AppDomainAppPath ?? Environment.CurrentDirectory;
 
-            return new ServerModel { Host = host, Root = root };
+            var machine = Environment.MachineName;
+            var software = request.ServerVariables["SERVER_SOFTWARE"];
+
+            return new ServerModel { Host = host, Root = root, Machine = machine, Software = software };
         }
 
         /// <summary>
