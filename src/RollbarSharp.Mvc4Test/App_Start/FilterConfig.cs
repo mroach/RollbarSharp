@@ -19,14 +19,7 @@ namespace RollbarSharp.Mvc4Test
             if (filterContext.ExceptionHandled)
                 return;
 
-            var client = new RollbarClient();
-            client.RequestCompleted += client_RequestCompleted;
-            client.SendException(filterContext.Exception);
-        }
-
-        void client_RequestCompleted(object source, RequestCompletedEventArgs args)
-        {
-            File.WriteAllText(@"c:\users\mroach\stuff\debug.txt", args.Result.ToString());
+            (new RollbarClient()).SendException(filterContext.Exception);
         }
     }
 }
