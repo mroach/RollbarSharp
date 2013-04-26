@@ -11,6 +11,7 @@ BUILD_ROOT = File.join(ROOT, 'build')
 SOLUTION_FILE = File.join(SRC_ROOT, "RollbarSharp.sln")
 BIN_DIR = File.join(SRC_ROOT, "RollbarSharp/bin/#{BUILD_CONFIGURATION}/")
 PUBLISH_DIR = File.join(BUILD_ROOT, 'publish')
+CHANGELOG_FILE = File.join(ROOT, 'CHANGELOG.md')
 
 BUILD_PROPERTIES = {
   :configuration => BUILD_CONFIGURATION
@@ -29,7 +30,7 @@ end
 # finds the text of the current changelog notes
 # used for populating release notes in nuget
 def release_notes
-  changelog = IO.read(File.join(ROOT, 'CHANGELOG.md'))
+  changelog = File.read(CHANGELOG_FILE)
   match = /#\s+(#{Regexp.quote(current_build_number)})[^\r\n]+[\r\n]+(?<text>[^#\z]+)/.match(changelog)
   return "" if match.nil?
   match[:text].strip
@@ -107,3 +108,36 @@ end
 
 desc "Build, generate nuspec, copy DLLs, create nuget package"
 task :nugetify => [:build, :nuspec, :copy, :nugetpack]
+
+task :build_changelog do
+  # dump the git log. empty lines represent different revisions.
+  lines = %x[git log --format=%s -- "#{SRC_ROOT}"].split(/[\r\n]/)
+
+  # include all log entries until we hit one that contains a version note
+  new_changes = lines.take_while { |line| !(/Version \d\.\d\.\d\.\d/ =~ line) }
+
+  if new_changes.empty?
+    puts "no new changes found"
+    next
+  end
+
+  heading = "## #{current_build_number} (#{DateTime.now.strftime("%F")})"
+
+  changelog = File.read(CHANGELOG_FILE)
+
+  if !changelog.index("## #{current_build_number}").nil?
+    puts "Already contains notes for version #{current_build_number}. You probably want to bump the version."
+    next
+  end
+
+  puts "Adding #{new_changes.length} items"
+
+  # prepend each commit with an asterisk so it shows up as a list in markdown
+  entry = new_changes.map { |line| "* #{line}" }.join("\n").sub("Version #{current_build_number}", "")
+
+  # write new changelog file
+  File.open(CHANGELOG_FILE, 'w') do |f|
+    f.write "#{heading}\n\n#{entry}\n\n\n"
+    f.write changelog
+  end
+end
