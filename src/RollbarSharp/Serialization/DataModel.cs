@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace RollbarSharp.Serialization
 {
@@ -63,7 +64,7 @@ namespace RollbarSharp.Serialization
         /// An object containing arbitrary custom data
         /// </summary>
         [JsonProperty("custom")]
-        public object Custom { get; set; }
+        public IDictionary<string, object> Custom { get; set; }
 
         [JsonProperty("notifier")]
         public NotifierModel Notifier { get; set; }
@@ -87,6 +88,7 @@ namespace RollbarSharp.Serialization
         {
             Level = level;
             Body = body;
+            Custom = new Dictionary<string, object>();
         }
     }
 }

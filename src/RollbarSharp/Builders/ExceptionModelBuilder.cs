@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using RollbarSharp.Serialization;
 
 namespace RollbarSharp.Builders
@@ -18,6 +19,9 @@ namespace RollbarSharp.Builders
             if (ex.Data.Contains("fingerprint"))
                 m.Fingerprint = ex.Data["fingerprint"].ToString();
 
+            if (ex.Data.Count > 0)
+                m.Data = ex.Data.Keys.Cast<object>().ToDictionary(k => k, k => ex.Data[k]);
+            
             return m;
         }
     }

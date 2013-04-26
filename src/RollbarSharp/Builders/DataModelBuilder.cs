@@ -24,6 +24,9 @@ namespace RollbarSharp.Builders
             if (!string.IsNullOrEmpty(body.Trace.Exception.Fingerprint))
                 model.Fingerprint = FingerprintHash(body.Trace.Exception.Fingerprint);
 
+            if (body.Trace.Exception.Data != null)
+                model.Custom["exception_data"] = body.Trace.Exception.Data;
+
             model.Title = message;
 
             return model;

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace RollbarSharp.Serialization
 {
@@ -26,6 +28,12 @@ namespace RollbarSharp.Serialization
         /// it will be stored here for use on the notice's <see cref="DataModel.Fingerprint"/>
         /// </summary>
         public string Fingerprint { get; set; }
+
+        /// <summary>
+        /// Copy of the <see cref="Exception.Data"/> dictionary from the original
+        /// <see cref="Exception"/> that was thrown.
+        /// </summary>
+        public IDictionary<object, object> Data { get; set; }
 
         public ExceptionModel(string exceptionClass, string message)
         {

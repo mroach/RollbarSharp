@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="describe_RollbarClient.cs" />
+    <Compile Include="Serialization\describe_DataModelBuilder.cs" />
     <Compile Include="Serialization\describe_ExceptionModel.cs" />
     <Compile Include="Serialization\describe_NotifierModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
