@@ -29,7 +29,7 @@ namespace RollbarSharp.Builders
             return model;
         }
 
-        public DataModel CreateMessageNotice(string message, string level = "info", IDictionary<string, string> customData = null)
+        public DataModel CreateMessageNotice(string message, string level = "info", IDictionary<string, object> customData = null)
         {
             return Create(level, BodyModelBuilder.CreateMessageBody(message, customData));
         }

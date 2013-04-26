@@ -20,23 +20,23 @@ namespace RollbarSharp.Serialization
     {
         public string Message { get; set; }
 
-        public IDictionary<string, string> CustomData { get; set; }
+        public IDictionary<string, object> CustomData { get; set; }
 
         [JsonProperty("message")]
-        internal IDictionary<string, string> Serialized
+        internal IDictionary<string, object> Serialized
         {
             get
             {
-                var result = new Dictionary<string, string>(CustomData);
+                var result = new Dictionary<string, object>(CustomData);
                 result["body"] = Message;
                 return result;
             }
         }
 
-        public MessageBodyModel(string message, IDictionary<string, string> customData = null)
+        public MessageBodyModel(string message, IDictionary<string, object> customData = null)
         {
             Message = message;
-            CustomData = customData ?? new Dictionary<string, string>();
+            CustomData = customData ?? new Dictionary<string, object>();
         }
     }
 }

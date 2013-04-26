@@ -17,7 +17,7 @@ namespace RollbarSharp.Builders
             return new ExceptionBodyModel(trace);
         }
 
-        public static MessageBodyModel CreateMessageBody(string message, IDictionary<string, string> customData)
+        public static MessageBodyModel CreateMessageBody(string message, IDictionary<string, object> customData)
         {
             return new MessageBodyModel(message, customData);
         }

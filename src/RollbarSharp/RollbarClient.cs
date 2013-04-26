@@ -114,7 +114,7 @@ namespace RollbarSharp
         /// </summary>
         /// <param name="message"></param>
         /// <param name="customData"></param>
-        public void SendCriticalMessage(string message, IDictionary<string, string> customData = null)
+        public void SendCriticalMessage(string message, IDictionary<string, object> customData = null)
         {
             SendMessage(message, "critical", customData);
         }
@@ -124,7 +124,7 @@ namespace RollbarSharp
         /// </summary>
         /// <param name="message"></param>
         /// <param name="customData"></param>
-        public void SendErrorMessage(string message, IDictionary<string, string> customData = null)
+        public void SendErrorMessage(string message, IDictionary<string, object> customData = null)
         {
             SendMessage(message, "error", customData);
         }
@@ -134,7 +134,7 @@ namespace RollbarSharp
         /// </summary>
         /// <param name="message"></param>
         /// <param name="customData"></param>
-        public void SendWarningMessage(string message, IDictionary<string, string> customData = null)
+        public void SendWarningMessage(string message, IDictionary<string, object> customData = null)
         {
             SendMessage(message, "warning", customData);
         }
@@ -144,7 +144,7 @@ namespace RollbarSharp
         /// </summary>
         /// <param name="message"></param>
         /// <param name="customData"></param>
-        public void SendInfoMessage(string message, IDictionary<string, string> customData = null)
+        public void SendInfoMessage(string message, IDictionary<string, object> customData = null)
         {
             SendMessage(message, "info", customData);
         }
@@ -154,7 +154,7 @@ namespace RollbarSharp
         /// </summary>
         /// <param name="message"></param>
         /// <param name="customData"></param>
-        public void SendDebugMessage(string message, IDictionary<string, string> customData = null)
+        public void SendDebugMessage(string message, IDictionary<string, object> customData = null)
         {
             SendMessage(message, "debug", customData);
         }
@@ -165,7 +165,7 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="level"></param>
         /// <param name="customData"></param>
-        public void SendMessage(string message, string level, IDictionary<string, string> customData = null)
+        public void SendMessage(string message, string level, IDictionary<string, object> customData = null)
         {
             var notice = DataBuilder.CreateMessageNotice(message, level, customData);
             Send(notice);
