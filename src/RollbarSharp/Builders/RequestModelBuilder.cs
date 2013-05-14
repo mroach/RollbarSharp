@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
@@ -44,7 +43,9 @@ namespace RollbarSharp.Builders
                 foreach (var file in DescribePostedFiles(request.Files))
                     m.PostParameters.Add(file.Key, "FILE: " + file.Value);
 
-            m.UserIp = request.UserHostAddress;
+            // if the X-Forwarded-For header exists, use that as the user's IP.
+            // that will be thetrue remote IP of a user behind a proxy server or load balancer
+            m.UserIp = request.Headers["X-Forwarded-For"] ?? request.UserHostAddress;
 
             m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString());
 
