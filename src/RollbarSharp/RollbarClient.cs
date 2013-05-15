@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RollbarSharp.Builders;
 using RollbarSharp.Serialization;
@@ -196,6 +197,11 @@ namespace RollbarSharp
 
         protected void HttpPost(string payload)
         {
+            Task.Factory.StartNew(() => HttpPostAsync(payload));
+        }
+
+        protected void HttpPostAsync(string payload)
+        {
             // convert the json payload to bytes for transmission
             var payloadBytes = Encoding.GetEncoding(Configuration.Encoding).GetBytes(payload);
 
@@ -204,44 +210,52 @@ namespace RollbarSharp
             request.Method = "POST";
             request.ContentLength = payloadBytes.Length;
 
-            OnRequestStarting(this, payload);
+            OnRequestStarting(payload);
 
-            using (var stream = request.GetRequestStream())
+            // we need to wrap GetRequestStream() in a try block
+            // if the endpoint is unreachable, that exception gets thrown here
+            try
             {
-                stream.Write(payloadBytes, 0, payloadBytes.Length);
-                stream.Close();
+                using (var stream = request.GetRequestStream())
+                {
+                    stream.Write(payloadBytes, 0, payloadBytes.Length);
+                    stream.Close();
+                }
             }
-            
-            request.BeginGetResponse(HttpRequestCallback, request);
-        }
-
-        protected void HttpRequestCallback(IAsyncResult result)
-        {
-            var request = result.AsyncState as HttpWebRequest;
-
-            if (request == null)
+            catch (Exception ex)
+            {
+                OnRequestCompleted(new Result(0, ex.Message));
                 return;
+            }
 
+            // attempt to parse the response. wrap GetResponse() in a try block
+            // since WebRequest throws exceptions for HTTP error status codes
             WebResponse response;
 
             try
             {
-                response = request.EndGetResponse(result);
+                response = request.GetResponse();
             }
             catch (WebException ex)
             {
-                response = ex.Response;
+                OnRequestCompleted(ex.Response);
+                return;
+            }
+            catch (Exception ex)
+            {
+                OnRequestCompleted(new Result(0, ex.Message));
+                return;
             }
 
             OnRequestCompleted(response);
         }
 
-        protected void OnRequestStarting(object source, string payload)
+        protected void OnRequestStarting(string payload)
         {
             if (RequestStarting == null)
                 return;
 
-            RequestStarting(source, new RequestStartingEventArgs(payload));
+            RequestStarting(this, new RequestStartingEventArgs(payload));
         }
 
         protected void OnRequestCompleted(WebResponse response)
@@ -252,20 +266,27 @@ namespace RollbarSharp
             using (var stream = response.GetResponseStream())
             {
                 if (stream == null)
-                    return;
-
-                using (var reader = new StreamReader(stream))
+                    responseText = string.Empty;
+                else
                 {
-                    responseText = reader.ReadToEnd();
+                    using (var reader = new StreamReader(stream))
+                    {
+                        responseText = reader.ReadToEnd();
+                    }
                 }
             }
+            
+            var result = new Result(responseCode, responseText);
+            OnRequestCompleted(result);
+        }
 
+        protected void OnRequestCompleted(Result result)
+        {
             if (RequestCompleted == null)
                 return;
 
-            var result = new Result(responseCode, responseText);
             var args = new RequestCompletedEventArgs(result);
-            RequestCompleted(result, args);
+            RequestCompleted(this, args);
         }
     }
 }
