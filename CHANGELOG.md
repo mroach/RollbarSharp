@@ -1,3 +1,11 @@
+## 0.1.6.0 (2013-05-15)
+
+* Solved threading problem.
+* When an X-Forwarded-For HTTP header exists, use that as the user's IP address rather than REMOTE_ADDR. When a user is behind a proxy server or load balancer, X-Forwarded-For will be their actual IP address.
+* Simplified the exception filter example
+* Removed testing key from config
+
+
 ## 0.1.5.0 (2013-04-26)
 
 * Added properties 'machine' and 'software' to the 'server' model. These aren't offically supported but they show up on the web and they're useful.
