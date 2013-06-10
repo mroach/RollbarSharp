@@ -12,7 +12,9 @@ As of now this binding is only for .NET 4. If there's a widespread desire for .N
 
 RollbarSharp is available on [Nuget](https://nuget.org/packages/RollbarSharp/) and can be installed by:
 
-`PM> Install-Package RollbarSharp`
+```
+PM> Install-Package RollbarSharp
+```
 
 ## Usage
 
