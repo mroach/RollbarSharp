@@ -45,5 +45,11 @@ namespace RollbarSharp.Serialization
         /// </summary>
         [JsonProperty("log_file")]
         public string LogFile { get; set; }
+
+        /// <summary>
+        /// Git SHA of the running code revision. Use the full SHA.
+        /// </summary>
+        [JsonProperty("sha")]
+        public string GitSha { get; set; }
     }
 }

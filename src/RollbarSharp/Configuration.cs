@@ -74,6 +74,14 @@ namespace RollbarSharp
         public string Framework { get; set; }
 
         /// <summary>
+        /// GIT SHA hash of the running code
+        /// 
+        /// Setting: Rollbar.GitSha
+        /// Default: None. You have to set this.
+        /// </summary>
+        public string GitSha { get; set; }
+
+        /// <summary>
         /// Settings used to serialize the payload to JSON when posting to Rollbar
         /// </summary>
         public JsonSerializerSettings JsonSettings
@@ -106,6 +114,7 @@ namespace RollbarSharp
         /// Rollbar.Platform
         /// Rollbar.CodeLanguage
         /// Rollbar.Framework
+        /// Rollbar.GitSha
         /// </summary>
         /// <returns></returns>
         public static Configuration CreateFromAppConfig()
@@ -122,6 +131,7 @@ namespace RollbarSharp
             conf.Platform = GetSetting("Rollbar.Platform") ?? conf.Platform;
             conf.Language = GetSetting("Rollbar.CodeLanguage") ?? conf.Language;
             conf.Framework = GetSetting("Rolllbar.Framework") ?? conf.Framework;
+            conf.GitSha = GetSetting("Rollbar.GitSha");
 
             return conf;
         }
