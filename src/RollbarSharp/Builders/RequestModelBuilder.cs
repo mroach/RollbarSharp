@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
@@ -45,13 +46,26 @@ namespace RollbarSharp.Builders
 
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be thetrue remote IP of a user behind a proxy server or load balancer
-            m.UserIp = request.Headers["X-Forwarded-For"] ?? request.UserHostAddress;
+            m.UserIp = IpFromXForwardedFor(request) ?? request.UserHostAddress;
 
             m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString());
 
             return m;
         }
-        
+
+        private static string IpFromXForwardedFor(HttpRequest request)
+        {
+            // X-Forwarded-For header, if populated, contains a comma separated list of ip address
+            // of each successive proxy server. Take the last or most reliable IP address if there
+            // is multiple addresses.
+            string forwardedFor = request.Headers["X-Forwarded-For"];
+            if (!String.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
+            {
+                forwardedFor = forwardedFor.Split(new[] { ',' }).Last().Trim();
+            }
+            return forwardedFor;
+        }
+
         /// <summary>
         /// Convert a <see cref="NameValueCollection"/> to a dictionary which is far more usable.
         /// </summary>
