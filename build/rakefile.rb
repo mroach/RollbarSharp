@@ -12,6 +12,7 @@ SOLUTION_FILE = File.join(SRC_ROOT, "RollbarSharp.sln")
 BIN_DIR = File.join(SRC_ROOT, "RollbarSharp/bin/#{BUILD_CONFIGURATION}/")
 PUBLISH_DIR = File.join(BUILD_ROOT, 'publish')
 CHANGELOG_FILE = File.join(ROOT, 'CHANGELOG.md')
+NSPEC_RUNNER = File.join(Dir[File.join(SRC_ROOT, "packages", "nspec.*", "tools")].first, "NSpecRunner.exe")
 
 BUILD_PROPERTIES = {
   :configuration => BUILD_CONFIGURATION
@@ -140,4 +141,9 @@ task :build_changelog do
     f.write "#{heading}\n\n#{entry}\n\n\n"
     f.write changelog
   end
+end
+
+exec :test => [:build] do |cmd|
+  cmd.command = NSPEC_RUNNER
+  cmd.parameters = File.join(SRC_ROOT, "RollbarSharp.Tests", "bin", BUILD_CONFIGURATION, "RollbarSharp.Tests.dll")
 end
