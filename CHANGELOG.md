@@ -1,3 +1,11 @@
+## 0.1.7.0 (2013-09-16)
+
+* Added 'test' rake task to run nuspec
+* Parse X-Forwarded-For header for the last IP address for the User IP
+* Added support for the git SHA and overloads for custom data model on sends
+* Add support for configuring Rollbar from the NLog target and using formatting
+
+
 ## 0.1.6.0 (2013-05-15)
 
 * Solved threading problem.
