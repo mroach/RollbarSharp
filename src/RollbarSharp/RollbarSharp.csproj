@@ -55,6 +55,7 @@
     <Compile Include="RequestStartingEventArgs.cs" />
     <Compile Include="Result.cs" />
     <Compile Include="RollbarClient.cs" />
+    <Compile Include="RollbarHttpModule.cs" />
     <Compile Include="Serialization\BodyModel.cs" />
     <Compile Include="Serialization\ExceptionBodyModel.cs" />
     <Compile Include="Serialization\ExceptionModel.cs" />

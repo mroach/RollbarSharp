@@ -66,14 +66,23 @@ The `OnException` method could instead be used verbatim inside a `Controller` if
 ```csharp
 protected void Application_Error(object sender, EventArgs e)
 {
-    var exception = (HttpException) Server.GetLastError();
+    var exception = Server.GetLastError().GetBaseException();
 
-    if (exception.InnerException == null)
-        return;
-
-    (new RollbarClient()).SendException(filterContext.Exception);
+    (new RollbarClient()).SendException(exception);
 }
 ```
+
+
+### As an HttpModule in the Web.config
+
+```xml
+	<system.webServer>
+		<modules>
+			<add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
+		</modules>
+	</system.webServer>
+```
+
 
 ## Bugs
 
