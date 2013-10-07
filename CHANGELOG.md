@@ -1,3 +1,12 @@
+## 0.2.1.0 (2013-10-07)
+
+* Merge pull request #5 from richardversluis/master
+* exclude posible null key when converting NameValueCollection to dict
+* Bumped to version 0.2.0.0
+* Update spacing for project consistency
+* Added a HttpModule which can be used to catch exceptions
+
+
 ## 0.2.0.0 (2013-10-07)
 
 * Added a HttpModule which can be used to catch exceptions
