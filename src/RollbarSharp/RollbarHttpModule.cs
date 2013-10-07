@@ -3,22 +3,22 @@ using System.Web;
 
 namespace RollbarSharp
 {
-  public class RollbarHttpModule : IHttpModule
-  {
-    public void Init(HttpApplication context)
+    public class RollbarHttpModule : IHttpModule
     {
-      context.Error += SendError;
-    }
+        public void Init(HttpApplication context)
+        {
+            context.Error += SendError;
+        }
 
-    public void Dispose()
-    {
-    }
+        public void Dispose()
+        {
+        }
 
-    private void SendError(object sender, EventArgs e)
-    {
-      var application = (HttpApplication)sender;
-      new RollbarClient().SendException(application.Server.GetLastError().GetBaseException());
+        private static void SendError(object sender, EventArgs e)
+        {
+            var application = (HttpApplication) sender;
+            new RollbarClient().SendException(application.Server.GetLastError().GetBaseException());
+        }
+
     }
-    
-  }
 }
