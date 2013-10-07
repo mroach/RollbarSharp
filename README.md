@@ -75,14 +75,25 @@ protected void Application_Error(object sender, EventArgs e)
 
 ### As an HttpModule in the Web.config
 
+#### IIS Integrated Pipeline
+
 ```xml
-	<system.webServer>
-		<modules>
-			<add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
-		</modules>
-	</system.webServer>
+<system.webServer>
+    <modules>
+        <add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
+    </modules>
+</system.webServer>
 ```
 
+#### IIS Classic Pipeline
+
+```xml
+<system.web>
+    <httpModules>
+      <add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
+    </httpModules>
+</system.web>
+```
 
 ## Bugs
 
