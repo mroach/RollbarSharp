@@ -76,7 +76,7 @@ namespace RollbarSharp.Builders
             if (col == null || col.Count == 0)
                 return new Dictionary<string, string>();
 
-            return col.AllKeys.ToDictionary(key => key, key => col[key]);
+            return col.AllKeys.Where(key => key != null).ToDictionary(key => key, key => col[key]);
         }
 
         /// <summary>
