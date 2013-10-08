@@ -49,7 +49,6 @@
     <Compile Include="Serialization\describe_ExceptionModel.cs" />
     <Compile Include="Serialization\describe_NotifierModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialization\describe_TraceModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

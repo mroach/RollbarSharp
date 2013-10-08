@@ -48,7 +48,7 @@
     <Compile Include="Builders\PersonModelBuilder.cs" />
     <Compile Include="Builders\RequestModelBuilder.cs" />
     <Compile Include="Builders\ServerModelBuilder.cs" />
-    <Compile Include="Builders\TraceModelBuilder.cs" />
+    <Compile Include="Builders\TraceChainModelBuilder.cs" />
     <Compile Include="Configuration.cs" />
     <Compile Include="InternalExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

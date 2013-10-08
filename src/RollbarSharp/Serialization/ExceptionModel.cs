@@ -24,12 +24,6 @@ namespace RollbarSharp.Serialization
         public string Message { get; set; }
 
         /// <summary>
-        /// If the exception defined a 'fingerprint' item in its Data property,
-        /// it will be stored here for use on the notice's <see cref="DataModel.Fingerprint"/>
-        /// </summary>
-        public string Fingerprint { get; set; }
-
-        /// <summary>
         /// Copy of the <see cref="Exception.Data"/> dictionary from the original
         /// <see cref="Exception"/> that was thrown.
         /// </summary>

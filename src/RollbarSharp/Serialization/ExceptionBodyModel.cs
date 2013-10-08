@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace RollbarSharp.Serialization
 {
@@ -11,12 +12,12 @@ namespace RollbarSharp.Serialization
         /// <summary>
         /// Exception trace. Includes exception class, message, and backtrace.
         /// </summary>
-        [JsonProperty("trace")]
-        public TraceModel Trace { get; set; }
+        [JsonProperty("trace_chain")]
+        public IEnumerable<TraceModel> TraceChain { get; set; }
 
-        public ExceptionBodyModel(TraceModel trace)
+        public ExceptionBodyModel(IEnumerable<TraceModel> traceChain)
         {
-            Trace = trace;
+            TraceChain = traceChain;
         }
     }
 }
