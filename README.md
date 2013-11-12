@@ -112,8 +112,8 @@ You'll need to add the [NLog.RollbarSharp](https://github.com/mroach/NLog.Rollba
     </rules>
 </nlog>
 <appSettings>
-  <add key="Rollbar.AccessToken" value="6703358e9f54081e59bb0d65ee066363"/>
-  <add key="Rollbar.Environment" value="development"/>
+    <add key="Rollbar.AccessToken" value="6703358e9f54081e59bb0d65ee066363"/>
+    <add key="Rollbar.Environment" value="development"/>
 </appSettings>
 ```
 
