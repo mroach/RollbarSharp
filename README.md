@@ -90,7 +90,7 @@ protected void Application_Error(object sender, EventArgs e)
 ```xml
 <system.web>
     <httpModules>
-      <add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
+        <add name="RollbarHttpModule" type="RollbarSharp.RollbarHttpModule"/>
     </httpModules>
 </system.web>
 ```
