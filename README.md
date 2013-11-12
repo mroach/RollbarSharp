@@ -95,6 +95,28 @@ protected void Application_Error(object sender, EventArgs e)
 </system.web>
 ```
 
+### As an NLog target
+
+You'll need to add the [NLog.RollbarSharp](https://github.com/mroach/NLog.RollbarSharp) assembly to your project for this to work but it's available on [NuGet](https://www.nuget.org/packages/NLog.RollbarSharp/). Check out [the NLog.RollbarSharp README](https://github.com/mroach/NLog.RollbarSharp/blob/master/README.md) for configuration details, but here's the skinny:
+
+```xml
+<nlog>
+    <extensions>
+        <add assembly="NLog.RollbarSharp" />
+    </extensions>
+    <targets>
+        <target xsi:type="RollbarSharp" name="rollbar" />
+    </targets>
+    <rules>
+        <logger name="*" minlevel="Warn" writeTo="rollbar" />
+    </rules>
+</nlog>
+<appSettings>
+  <add key="Rollbar.AccessToken" value="6703358e9f54081e59bb0d65ee066363"/>
+  <add key="Rollbar.Environment" value="development"/>
+</appSettings>
+```
+
 ## Bugs
 
 * If you encounter a bug, performance issue, or malfunction, please add an [Issue](https://github.com/mroach/rollbarsharp/issues) with steps on how to reproduce the problem.
