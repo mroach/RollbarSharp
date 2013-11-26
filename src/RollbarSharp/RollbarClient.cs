@@ -256,7 +256,17 @@ namespace RollbarSharp
             }
             catch (WebException ex)
             {
-                OnRequestCompleted(ex.Response);
+                if (ex.Response == null)
+                {
+                    var failMsg = string.Format("Request failed. Status: {0}. Message: {1}",
+                                                ex.Status, ex.Message);
+                    OnRequestCompleted(new Result(0, failMsg));
+                }
+                else
+                {
+                    OnRequestCompleted(ex.Response);
+                }
+                
                 return;
             }
             catch (Exception ex)
