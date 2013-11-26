@@ -115,7 +115,7 @@ task :build_changelog do
   lines = %x[git log --format=%s -- "#{SRC_ROOT}"].split(/[\r\n]/)
 
   # include all log entries until we hit one that contains a version note
-  new_changes = lines.take_while { |line| !(/Version \d\.\d\.\d\.\d/ =~ line) }
+  new_changes = lines.take_while { |line| !(/Version \d\.\d\.\d\.\d/i =~ line) }
 
   if new_changes.empty?
     puts "no new changes found"
