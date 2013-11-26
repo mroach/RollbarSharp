@@ -1,3 +1,8 @@
+## 0.2.2.0 (2013-11-26)
+
+* Fixed: Handle null Response in WebException
+
+
 ## 0.2.1.0 (2013-10-07)
 
 * Merge pull request #5 from richardversluis/master
