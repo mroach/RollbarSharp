@@ -2,8 +2,6 @@
 
 .NET bindings for [Rollbar](http://www.rollbar.com).
 
-This project is still under development and should be considered in a preview release state.
-
 I'm not affiliated with Rollbar, I just like their service.
 
 As of now this binding is only for .NET 4. If there's a widespread desire for .NET 2.0 support, I'd consider doing that. There's also a dependency on `System.Web.Routing`, so you'll at least need ASP.NET MVC installed on the system.
@@ -30,6 +28,8 @@ The easiest way to get going is to add the `Rollbar.AccessToken` item to your ap
   </appSettings>
 </configuration>
 ```
+
+From there, you have several options on how to integrate with your app.
 
 ### As an ASP.NET Filter
 
