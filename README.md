@@ -147,5 +147,3 @@ rake build
 ## TODO
 
 * Add more tests
-* Test NLog extension
-* Create nuget package for the NLog extension
