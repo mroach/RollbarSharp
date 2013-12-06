@@ -1,3 +1,9 @@
+## 0.3.0.0 (2013-12-06)
+
+* Add Session data to report. Scrub sensitive param values.
+* Tidying-up
+
+
 ## 0.2.2.0 (2013-11-26)
 
 * Fixed: Handle null Response in WebException

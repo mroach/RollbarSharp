@@ -3,4 +3,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("RollbarSharp")]
 [assembly: AssemblyDescription("RollbarSharp")]
 [assembly: AssemblyProduct("RollbarSharp")]
-[assembly: AssemblyVersion("0.2.2.0")]
+[assembly: AssemblyVersion("0.3.0.0")]
