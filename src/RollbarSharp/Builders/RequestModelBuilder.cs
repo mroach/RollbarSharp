@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
+using System.Web.SessionState;
 using RollbarSharp.Serialization;
 
 namespace RollbarSharp.Builders
@@ -14,11 +14,11 @@ namespace RollbarSharp.Builders
         /// Copies over: URL, HTTP method, HTTP headers, query string params, POST params, user IP, route params
         /// </summary>
         /// <returns></returns>
-        public static RequestModel CreateFromCurrentRequest()
+        public static RequestModel CreateFromCurrentRequest(string[] scrubParams = null)
         {
             var cx = HttpContext.Current;
 
-            return cx == null ? new RequestModel() : CreateFromHttpRequest(cx.Request);
+            return cx == null ? new RequestModel() : CreateFromHttpRequest(cx.Request, cx.Session, scrubParams);
         }
 
         /// <summary>
@@ -26,29 +26,39 @@ namespace RollbarSharp.Builders
         /// Copies over: URL, HTTP method, HTTP headers, query string params, POST params, user IP, route params
         /// </summary>
         /// <param name="request"></param>
+        /// <param name="session"></param>
+        /// <param name="scrubParams"></param>
         /// <returns></returns>
-        public static RequestModel CreateFromHttpRequest(HttpRequest request)
+        public static RequestModel CreateFromHttpRequest(HttpRequest request, HttpSessionState session, string[] scrubParams = null)
         {
             var m = new RequestModel();
 
             m.Url = request.Url.ToString();
             m.Method = request.HttpMethod;
-            m.Headers = CollectionToDictionary(request.Headers);
+            m.Headers = request.Headers.ToDictionary();
+            m.Session = session.ToDictionary();
 
-            m.QueryStringParameters = CollectionToDictionary(request.QueryString);
-            
-            m.PostParameters = CollectionToDictionary(request.Form);
+            m.QueryStringParameters = request.QueryString.ToDictionary();
+            m.PostParameters = request.Form.ToDictionary();
 
             // add posted files to the post collection
             if (request.Files.Count > 0)
-                foreach (var file in DescribePostedFiles(request.Files))
+                foreach (var file in request.Files.Describe())
                     m.PostParameters.Add(file.Key, "FILE: " + file.Value);
 
             // if the X-Forwarded-For header exists, use that as the user's IP.
-            // that will be thetrue remote IP of a user behind a proxy server or load balancer
+            // that will be the true remote IP of a user behind a proxy server or load balancer
             m.UserIp = IpFromXForwardedFor(request) ?? request.UserHostAddress;
 
             m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString());
+
+            if (scrubParams != null)
+            {
+                m.Headers = Scrub(m.Headers, scrubParams);
+                m.Session = Scrub(m.Session, scrubParams);
+                m.QueryStringParameters = Scrub(m.QueryStringParameters, scrubParams);
+                m.PostParameters = Scrub(m.PostParameters, scrubParams);
+            }
 
             return m;
         }
@@ -61,41 +71,40 @@ namespace RollbarSharp.Builders
             var forwardedFor = request.Headers["X-Forwarded-For"];
             if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
             {
-                forwardedFor = forwardedFor.Split(new[] { ',' }).Last().Trim();
+                forwardedFor = forwardedFor.Split(',').Last().Trim();
             }
             return forwardedFor;
         }
 
         /// <summary>
-        /// Convert a <see cref="NameValueCollection"/> to a dictionary which is far more usable.
+        /// Finds dictionary keys in the <see cref="scrubParams"/> list and replaces their values
+        /// with asterisks. Key comparison is case insensitive.
         /// </summary>
-        /// <param name="col"></param>
+        /// <param name="dict"></param>
+        /// <param name="scrubParams"></param>
         /// <returns></returns>
-        private static IDictionary<string, string> CollectionToDictionary(NameValueCollection col)
+        private static IDictionary<string, string> Scrub(IDictionary<string, string> dict, string[] scrubParams)
         {
-            if (col == null || col.Count == 0)
-                return new Dictionary<string, string>();
+            if (dict == null || !dict.Any())
+                return dict;
 
-            return col.AllKeys.Where(key => key != null).ToDictionary(key => key, key => col[key]);
-        }
+            if (scrubParams == null || !scrubParams.Any())
+                return dict;
 
-        /// <summary>
-        /// Create a dictionary describing the files posted.
-        /// The key is the form field name, value the file name, mime type, and size in bytes.
-        /// </summary>
-        /// <param name="files"></param>
-        /// <returns></returns>
-        private static IDictionary<string, string> DescribePostedFiles(HttpFileCollection files)
-        {
-            return files.AllKeys.ToDictionary(k => k, k => DescribePostedFile(files[k]));
-        }
+            var itemsToUpdate = dict.Keys
+                                    .Where(k => scrubParams.Contains(k, StringComparer.InvariantCultureIgnoreCase))
+                                    .ToArray();
 
-        private static string DescribePostedFile(HttpPostedFile file)
-        {
-            if (file.ContentLength == 0 && string.IsNullOrEmpty(file.FileName))
-                return "[empty]";
+            if (itemsToUpdate.Any())
+            {
+                foreach (var key in itemsToUpdate)
+                {
+                    var len = dict[key] == null ? 8 : dict[key].Length;
+                    dict[key] = new string('*', len);
+                }
+            }
 
-            return string.Format("{0} ({1}, {2} bytes)", file.FileName, file.ContentType, file.ContentLength);
+            return dict;
         }
     }
 }

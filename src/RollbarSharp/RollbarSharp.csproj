@@ -50,6 +50,7 @@
     <Compile Include="Builders\ServerModelBuilder.cs" />
     <Compile Include="Builders\TraceModelBuilder.cs" />
     <Compile Include="Configuration.cs" />
+    <Compile Include="InternalExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RequestCompletedEventArgs.cs" />
     <Compile Include="RequestStartingEventArgs.cs" />

@@ -19,7 +19,18 @@ namespace RollbarSharp
         /// Default language name used in notices. (default: csharp)
         /// </summary>
         public static string DefaultLanguage = "csharp";
-        
+
+        /// <summary>
+        /// Default parameters that should be scrubbed from requests
+        /// </summary>
+        public static string[] DefaultScrubParams =
+            new[]
+                {
+                    "password", "password_confirmation", "confirm_password",
+                    "secret", "secret_token",
+                    "creditcard", "credit_card", "credit_card_number", "card_number", "ccnum", "cc_number"
+                };
+
         /// <summary>
         /// Encoding to use when communicating with the Rollbar endpoint (default: utf-8)
         /// </summary>
@@ -82,6 +93,12 @@ namespace RollbarSharp
         public string GitSha { get; set; }
 
         /// <summary>
+        /// Parameters that should be scrubbed (replaced with asterisks) rather than
+        /// being sent to rollbar. Such as passwords, secret keys, etc.
+        /// </summary>
+        public string[] ScrubParams { get; set; }
+
+        /// <summary>
         /// Settings used to serialize the payload to JSON when posting to Rollbar
         /// </summary>
         public JsonSerializerSettings JsonSettings
@@ -104,6 +121,7 @@ namespace RollbarSharp
             Platform = System.Environment.OSVersion.ToString();
             Framework = ".NET " + System.Environment.Version;
             Language = DefaultLanguage;
+            ScrubParams = DefaultScrubParams;
         }
 
         /// <summary>
@@ -132,6 +150,9 @@ namespace RollbarSharp
             conf.Language = GetSetting("Rollbar.CodeLanguage") ?? conf.Language;
             conf.Framework = GetSetting("Rolllbar.Framework") ?? conf.Framework;
             conf.GitSha = GetSetting("Rollbar.GitSha");
+
+            var scrubParams = GetSetting("Rollbar.ScrubParams");
+            conf.ScrubParams = scrubParams == null ? DefaultScrubParams : scrubParams.Split(',');
 
             return conf;
         }

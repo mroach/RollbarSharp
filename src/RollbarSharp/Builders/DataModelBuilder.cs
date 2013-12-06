@@ -61,7 +61,7 @@ namespace RollbarSharp.Builders
 
             model.Notifier = NotifierModelBuilder.CreateFromAssemblyInfo();
 
-            model.Request = RequestModelBuilder.CreateFromCurrentRequest();
+            model.Request = RequestModelBuilder.CreateFromCurrentRequest(Configuration.ScrubParams);
             model.Server = ServerModelBuilder.CreateFromCurrentRequest();
             model.Server.GitSha = Configuration.GitSha;
             model.Person = PersonModelBuilder.CreateFromCurrentRequest();

@@ -27,6 +27,12 @@ namespace RollbarSharp.Serialization
         /// </summary>
         [JsonProperty("headers")]
         public IDictionary<string, string> Headers { get; set; }
+        
+        /// <summary>
+        /// Server-side session data stored in Session object
+        /// </summary>
+        [JsonProperty("session")]
+        public IDictionary<string, string> Session { get; set; }
 
         /// <summary>
         /// Any routing paramters (e.g. for use with ASP.NET MVC Routes)
