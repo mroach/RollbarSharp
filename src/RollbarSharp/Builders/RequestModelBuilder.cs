@@ -53,13 +53,13 @@ namespace RollbarSharp.Builders
             return m;
         }
 
+        // X-Forwarded-For header, if populated, contains a comma separated list of ip address
+        // of each successive proxy server. Take the last or most reliable IP address if there
+        // are multiple addresses.
         private static string IpFromXForwardedFor(HttpRequest request)
         {
-            // X-Forwarded-For header, if populated, contains a comma separated list of ip address
-            // of each successive proxy server. Take the last or most reliable IP address if there
-            // is multiple addresses.
-            string forwardedFor = request.Headers["X-Forwarded-For"];
-            if (!String.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
+            var forwardedFor = request.Headers["X-Forwarded-For"];
+            if (!string.IsNullOrEmpty(forwardedFor) && forwardedFor.Contains(","))
             {
                 forwardedFor = forwardedFor.Split(new[] { ',' }).Last().Trim();
             }
@@ -71,7 +71,7 @@ namespace RollbarSharp.Builders
         /// </summary>
         /// <param name="col"></param>
         /// <returns></returns>
-        internal static IDictionary<string, string> CollectionToDictionary(NameValueCollection col)
+        private static IDictionary<string, string> CollectionToDictionary(NameValueCollection col)
         {
             if (col == null || col.Count == 0)
                 return new Dictionary<string, string>();
@@ -85,12 +85,12 @@ namespace RollbarSharp.Builders
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        internal static IDictionary<string, string> DescribePostedFiles(HttpFileCollection files)
+        private static IDictionary<string, string> DescribePostedFiles(HttpFileCollection files)
         {
             return files.AllKeys.ToDictionary(k => k, k => DescribePostedFile(files[k]));
         }
 
-        internal static string DescribePostedFile(HttpPostedFile file)
+        private static string DescribePostedFile(HttpPostedFile file)
         {
             if (file.ContentLength == 0 && string.IsNullOrEmpty(file.FileName))
                 return "[empty]";
