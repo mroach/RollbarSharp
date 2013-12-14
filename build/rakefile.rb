@@ -110,6 +110,7 @@ end
 desc "Build, generate nuspec, copy DLLs, create nuget package"
 task :nugetify => [:build, :nuspec, :copy, :nugetpack]
 
+desc "Append to the changelog using the git log"
 task :build_changelog do
   # dump the git log. empty lines represent different revisions.
   lines = %x[git log --format=%s -- "#{SRC_ROOT}"].split(/[\r\n]/)
