@@ -66,6 +66,15 @@ namespace RollbarSharp.Serialization
         [JsonProperty("custom")]
         public IDictionary<string, object> Custom { get; set; }
 
+        /// <summary>
+        /// Optional identifier for which part of your application this event came from.
+        /// Items can be searched by context (prefix search)
+        /// For example, in an MVC app, this could be "controller#action".
+        /// In a single-page javascript app, it could be the name of the current screen or route.
+        /// </summary>
+        [JsonProperty("context")]
+        public string Context { get; set; }
+
         [JsonProperty("notifier")]
         public NotifierModel Notifier { get; set; }
 
