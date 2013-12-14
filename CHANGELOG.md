@@ -1,3 +1,8 @@
+## 0.3.1.0 (2013-12-14)
+
+* Added 'Context' field to the data model
+
+
 ## 0.3.0.0 (2013-12-06)
 
 * Add Session data to report. Scrub sensitive param values.
