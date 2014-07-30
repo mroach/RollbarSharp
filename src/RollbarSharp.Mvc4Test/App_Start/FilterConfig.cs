@@ -19,7 +19,7 @@ namespace RollbarSharp.Mvc4Test
             if (filterContext.ExceptionHandled)
                 return;
 
-            (new RollbarClient()).SendException(filterContext.Exception);
+            (new RollbarClient()).SendException(filterContext.Exception, modelAction: m => m.Context = "error#context");
         }
     }
 }
