@@ -9,11 +9,11 @@ namespace RollbarSharp.Tests
         {
             var client = new RollbarClient();
             var notice = client.NoticeBuilder.CreateMessageNotice("Hello");
-            
+
             notice.Server.Host = "miker";
             notice.Request.Url = "http://localhost/hej";
             notice.Request.Method = "GET";
-            
+
             var serialized = client.Serialize(notice);
 
             it["shouldn't be blank"] = () => serialized.should_not_be_empty();
@@ -43,7 +43,7 @@ namespace RollbarSharp.Tests
             notice.Request.UserIp = "67.90.39.34";
             notice.Person.Id = "123";
             notice.Person.Username = Environment.UserName;
-            
+
             var serialized = client.Serialize(notice);
 
             it["shouldn't be blank"] = () => serialized.should_not_be_empty();
@@ -51,10 +51,11 @@ namespace RollbarSharp.Tests
             Console.WriteLine(serialized);
         }
 
-        private void CreateException()
+        private int CreateException()
         {
             var x = 0;
             var y = 1 / x;
+            return y;
         }
     }
 }

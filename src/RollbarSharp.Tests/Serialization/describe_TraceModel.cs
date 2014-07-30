@@ -21,10 +21,11 @@ namespace RollbarSharp.Tests.Serialization
             }
         }
 
-        private void GenerateException(string noparam)
+        private int GenerateException(string noparam)
         {
             var x = 0;
             var q = 1 / x;
+            return q;
         }
     }
 }

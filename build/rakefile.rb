@@ -12,7 +12,6 @@ SOLUTION_FILE = File.join(SRC_ROOT, "RollbarSharp.sln")
 BIN_DIR = File.join(SRC_ROOT, "RollbarSharp/bin/#{BUILD_CONFIGURATION}/")
 PUBLISH_DIR = File.join(BUILD_ROOT, 'publish')
 CHANGELOG_FILE = File.join(ROOT, 'CHANGELOG.md')
-NSPEC_RUNNER = File.join(Dir[File.join(SRC_ROOT, "packages", "nspec.*", "tools")].first, "NSpecRunner.exe")
 
 BUILD_PROPERTIES = {
   :configuration => BUILD_CONFIGURATION
@@ -37,6 +36,16 @@ def release_notes
   match[:text].strip
 end
 
+def dotnet_build (args, &blk)
+  require 'rbconfig'
+  case RbConfig::CONFIG['host_os']
+  when /mswin|msys|mingw|cygwin|bccwin|wince|emc/
+    msbuild(args, &blk)
+  else
+    xbuild(args, &blk)
+  end
+end
+
 task :default => [:fetch_packages, :build]
 
 desc "Update the AssemblyInfo file with the latest version"
@@ -48,17 +57,19 @@ assemblyinfo :assemblyinfo  do |asm|
   asm.output_file =  File.join(SRC_ROOT, "RollbarSharp/Properties/AssemblyInfo.cs")
 end
 
-desc "Fetch nuget pacakges needed to build the release solution"
-exec :fetch_packages do |cmd|
-  package_file = File.join(SRC_ROOT, 'RollbarSharp/packages.config')
-  package_out = File.join(SRC_ROOT, 'packages')
+[ 'RollbarSharp', 'RollbarSharp.Mvc4Test', 'RollbarSharp.Tests'].each do |directory|
+  desc "Fetch nuget packages for #{directory}"
+  exec :fetch_packages do |cmd|
+    package_file = File.join(SRC_ROOT, "#{directory}/packages.config")
+    package_out = File.join(SRC_ROOT, 'packages')
 
-  cmd.command = "nuget"
-  cmd.parameters = "install #{package_file} -o #{package_out}"
+    cmd.command = "nuget"
+    cmd.parameters = "install #{package_file} -o #{package_out}"
+  end
 end
 
 desc "Build the DLLs"
-msbuild :build => [:assemblyinfo] do |msb|
+dotnet_build :build => [:fetch_packages, :assemblyinfo] do |msb|
   msb.targets :clean, :build
   msb.solution = SOLUTION_FILE
   msb.properties = BUILD_PROPERTIES
@@ -89,7 +100,10 @@ end
 
 desc "Copy DLLs to the nuget publish directory"
 task :copy do
-  cp_r(File.join(BIN_DIR, "RollbarSharp.dll"), File.join(PUBLISH_DIR, 'lib/net40/'))
+  destDir = File.join(PUBLISH_DIR, 'lib/net40/')
+  mkdir_p(destDir)
+  cp_r(File.join(BIN_DIR, "RollbarSharp.dll"), destDir)
+  cp_r(File.join(BIN_DIR, "Newtonsoft.Json.dll"), destDir)
 end
 
 desc "Create the nuget package"
@@ -145,6 +159,6 @@ task :build_changelog do
 end
 
 exec :test => [:build] do |cmd|
-  cmd.command = NSPEC_RUNNER
+  cmd.command = File.join(Dir[File.join(SRC_ROOT, "packages", "nspec.*", "tools")].first, "NSpecRunner.exe")
   cmd.parameters = File.join(SRC_ROOT, "RollbarSharp.Tests", "bin", BUILD_CONFIGURATION, "RollbarSharp.Tests.dll")
 end
