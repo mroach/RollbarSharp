@@ -7,6 +7,12 @@ namespace RollbarSharp.Serialization
     public class DataModel
     {
         /// <summary>
+        /// Application code version: https://rollbar.com/blog/post/2013/09/17/resolving-rollbar-items-in-versions
+        /// </summary>
+        [JsonProperty("code_version")]
+        public string CodeVersion { get; set; }
+
+        /// <summary>
         /// Running environment. E.g. production, staging, development
         /// </summary>
         [JsonProperty("environment")]
