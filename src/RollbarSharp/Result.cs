@@ -25,6 +25,11 @@ namespace RollbarSharp
         public string Message { get; protected set; }
 
         /// <summary>
+        /// User-provided parameter from Send* functions
+        /// </summary>
+        public object UserParam { get; set; }
+
+        /// <summary>
         /// Successful or not
         /// </summary>
         public bool IsSuccess { get { return HttpStatusCode == 200; } }
@@ -43,10 +48,11 @@ namespace RollbarSharp
             }
         }
 
-        public Result(int httpStatusCode, string rawResponse)
+        public Result(int httpStatusCode, string rawResponse, object userParam)
         {
             HttpStatusCode = httpStatusCode;
             RawResponse = rawResponse;
+            UserParam = userParam;
             TryParseResponse(rawResponse);
         }
 

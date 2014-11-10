@@ -74,7 +74,7 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendCriticalException(Exception ex, string title = null, Action<DataModel> modelAction = null)
+        public void SendCriticalException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             SendException(ex, title, "critical", modelAction);
         }
@@ -85,7 +85,7 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendErrorException(Exception ex, string title = null, Action<DataModel> modelAction = null)
+        public void SendErrorException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             SendException(ex, title, "error", modelAction);
         }
@@ -96,7 +96,7 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendWarningException(Exception ex, string title = null, Action<DataModel> modelAction = null)
+        public void SendWarningException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             SendException(ex, title, "warning", modelAction);
         }
@@ -109,14 +109,14 @@ namespace RollbarSharp
         /// <param name="title"></param>
         /// <param name="level">Default is "error". "critical" and "warning" may also make sense to use.</param>
         /// <param name="modelAction"></param>
-        public void SendException(Exception ex, string title = null, string level = "error", Action<DataModel> modelAction = null)
+        public void SendException(Exception ex, string title = null, string level = "error", Action<DataModel> modelAction = null, object userParam = null)
         {
             var notice = NoticeBuilder.CreateExceptionNotice(ex, title, level);
             if (modelAction != null)
             {
                 modelAction(notice);
             }
-            Send(notice);
+            Send(notice, userParam);
         }
 
         /// <summary>
@@ -125,9 +125,9 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendCriticalMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendCriticalMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "critical", customData, modelAction);
+            SendMessage(message, "critical", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -136,9 +136,9 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendErrorMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendErrorMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "error", customData, modelAction);
+            SendMessage(message, "error", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -147,9 +147,9 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendWarningMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendWarningMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "warning", customData, modelAction);
+            SendMessage(message, "warning", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -158,9 +158,9 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendInfoMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendInfoMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "info", customData, modelAction);
+            SendMessage(message, "info", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendDebugMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendDebugMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             SendMessage(message, "debug", customData, modelAction);
         }
@@ -181,20 +181,20 @@ namespace RollbarSharp
         /// <param name="level"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendMessage(string message, string level, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null)
+        public void SendMessage(string message, string level, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             var notice = NoticeBuilder.CreateMessageNotice(message, level, customData);
             if (modelAction != null)
             {
                 modelAction(notice);
             }
-            Send(notice);
+            Send(notice, userParam);
         }
 
-        public void Send(DataModel data)
+        public void Send(DataModel data, object userParam)
         {
             var payload = new PayloadModel(Configuration.AccessToken, data);
-            HttpPost(payload);
+            HttpPost(payload, userParam);
         }
 
         /// <summary>
@@ -207,18 +207,18 @@ namespace RollbarSharp
             return JsonConvert.SerializeObject(data, Configuration.JsonSettings);
         }
 
-        protected void HttpPost(PayloadModel payload)
+        protected void HttpPost(PayloadModel payload, object userParam)
         {
             var payloadString = Serialize(payload);
-            HttpPost(payloadString);
+            HttpPost(payloadString, userParam);
         }
 
-        protected void HttpPost(string payload)
+        protected void HttpPost(string payload, object userParam)
         {
-            Task.Factory.StartNew(() => HttpPostAsync(payload));
+            Task.Factory.StartNew(() => HttpPostAsync(payload, userParam));
         }
 
-        protected void HttpPostAsync(string payload)
+        protected void HttpPostAsync(string payload, object userParam)
         {
             // convert the json payload to bytes for transmission
             var payloadBytes = Encoding.GetEncoding(Configuration.Encoding).GetBytes(payload);
@@ -228,7 +228,7 @@ namespace RollbarSharp
             request.Method = "POST";
             request.ContentLength = payloadBytes.Length;
 
-            OnRequestStarting(payload);
+            OnRequestStarting(payload, userParam);
 
             // we need to wrap GetRequestStream() in a try block
             // if the endpoint is unreachable, that exception gets thrown here
@@ -242,7 +242,7 @@ namespace RollbarSharp
             }
             catch (Exception ex)
             {
-                OnRequestCompleted(new Result(0, ex.Message));
+                OnRequestCompleted(new Result(0, ex.Message, userParam));
                 return;
             }
 
@@ -260,33 +260,33 @@ namespace RollbarSharp
                 {
                     var failMsg = string.Format("Request failed. Status: {0}. Message: {1}",
                                                 ex.Status, ex.Message);
-                    OnRequestCompleted(new Result(0, failMsg));
+                    OnRequestCompleted(new Result(0, failMsg, userParam));
                 }
                 else
                 {
-                    OnRequestCompleted(ex.Response);
+                    OnRequestCompleted(ex.Response, userParam);
                 }
                 
                 return;
             }
             catch (Exception ex)
             {
-                OnRequestCompleted(new Result(0, ex.Message));
+                OnRequestCompleted(new Result(0, ex.Message, userParam));
                 return;
             }
 
-            OnRequestCompleted(response);
+            OnRequestCompleted(response, userParam);
         }
 
-        protected void OnRequestStarting(string payload)
+        protected void OnRequestStarting(string payload, object userParam)
         {
             if (RequestStarting == null)
                 return;
 
-            RequestStarting(this, new RequestStartingEventArgs(payload));
+            RequestStarting(this, new RequestStartingEventArgs(payload, userParam));
         }
 
-        protected void OnRequestCompleted(WebResponse response)
+        protected void OnRequestCompleted(WebResponse response, object userParam)
         {
             var responseCode = (int) ((HttpWebResponse) response).StatusCode;
             string responseText;
@@ -304,7 +304,7 @@ namespace RollbarSharp
                 }
             }
             
-            var result = new Result(responseCode, responseText);
+            var result = new Result(responseCode, responseText, userParam);
             OnRequestCompleted(result);
         }
 
