@@ -51,7 +51,8 @@ namespace RollbarSharp.Builders
         protected DataModel Create(string level, BodyModel body)
         {
             var model = new DataModel(level, body);
-            
+
+            model.CodeVersion = Configuration.CodeVersion;
             model.Environment = Configuration.Environment;
             model.Platform = Configuration.Platform;
             model.Language = Configuration.Language;

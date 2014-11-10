@@ -6,6 +6,11 @@ namespace RollbarSharp
     public class Configuration
     {
         /// <summary>
+        /// Default application code version
+        /// </summary>
+        public static string DefaultCodeVersion = null;
+
+        /// <summary>
         /// Default endpoint URL for posting notices (default: https://api.rollbar.com/api/1/item/)
         /// </summary>
         public static string DefaultEndpoint = "https://api.rollbar.com/api/1/item/";
@@ -51,6 +56,14 @@ namespace RollbarSharp
         /// Default: None. You have to set this.
         /// </summary>
         public string AccessToken { get; set; }
+
+        /// <summary>
+        /// Version of the application that is running (see https://rollbar.com/blog/post/2013/09/17/resolving-rollbar-items-in-versions)
+        /// 
+        /// Setting: Rollbar.CodeVersion
+        /// Default: <see cref="RollbarSharp.Configuration.DefaultCodeVersion"/>
+        /// </summary>
+        public string CodeVersion;
 
         /// <summary>
         /// Name of the environment this app is running in. Usually "production" or "staging"
@@ -117,6 +130,7 @@ namespace RollbarSharp
         {
             Endpoint = DefaultEndpoint;
             AccessToken = accessToken;
+            CodeVersion = DefaultCodeVersion;
             Environment = DefaultEnvironment;
             Platform = System.Environment.OSVersion.ToString();
             Framework = ".NET " + System.Environment.Version;
@@ -127,6 +141,7 @@ namespace RollbarSharp
         /// <summary>
         /// Creates a <see cref="Configuration"/>, reading values from App/Web.config
         /// Rollbar.AccessToken
+        /// Rollbar.CodeVersion
         /// Rollbar.Endpoint
         /// Rollbar.Environment
         /// Rollbar.Platform
@@ -144,6 +159,7 @@ namespace RollbarSharp
 
             var conf = new Configuration(token);
 
+            conf.CodeVersion = GetSetting("Rollbar.CodeVersion") ?? conf.CodeVersion;
             conf.Endpoint = GetSetting("Rollbar.Endpoint") ?? conf.Endpoint;
             conf.Environment = GetSetting("Rollbar.Environment") ?? conf.Environment;
             conf.Platform = GetSetting("Rollbar.Platform") ?? conf.Platform;
