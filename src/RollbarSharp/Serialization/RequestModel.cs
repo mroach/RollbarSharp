@@ -68,6 +68,9 @@ namespace RollbarSharp.Serialization
             Parameters = new Dictionary<string, string>();
             QueryStringParameters = new Dictionary<string, string>();
             PostParameters = new Dictionary<string, string>();
+
+            // Ask Rollbar to capture the IP address of the application sending the report
+            UserIp = "$remote_ip";
         }
     }
 }
