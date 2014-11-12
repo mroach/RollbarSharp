@@ -74,9 +74,7 @@ namespace RollbarSharp.Builders
             if (IncludeInnerExceptions && exception.InnerException != null)
             {
                 // add a line to separate the inner exception
-                // use the inner exception's class name as the method name
-                var innerExType = exception.InnerException.GetType().Name;
-                lines.Add(new FrameModel("-- INNER EXCEPTION " + exception.InnerException.GetType() + " --", method: innerExType));
+                lines.Add(new FrameModel("-- INNER EXCEPTION " + exception.InnerException.GetType() + " --", method: exception.InnerException.Message));
 
                 lines.AddRange(CreateFramesFromException(exception.InnerException));
             }
