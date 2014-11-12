@@ -13,8 +13,8 @@ namespace RollbarSharp.Builders
     {
         public static ExceptionBodyModel CreateExceptionBody(Exception exception)
         {
-            var trace = TraceModelBuilder.CreateFromException(exception);
-            return new ExceptionBodyModel(trace);
+            var traces = TraceChainModelBuilder.CreateFromException(exception);
+            return new ExceptionBodyModel(traces);
         }
 
         public static MessageBodyModel CreateMessageBody(string message, IDictionary<string, object> customData)

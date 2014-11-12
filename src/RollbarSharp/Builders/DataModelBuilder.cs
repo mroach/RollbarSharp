@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
@@ -24,13 +25,15 @@ namespace RollbarSharp.Builders
         {
             var body = BodyModelBuilder.CreateExceptionBody(ex);
             var model = Create(level, body);
-            
-            // if the exception has a fingerprint property, copy it to the notice
-            if (!string.IsNullOrEmpty(body.Trace.Exception.Fingerprint))
-                model.Fingerprint = FingerprintHash(body.Trace.Exception.Fingerprint);
 
-            if (body.Trace.Exception.Data != null)
-                model.Custom["exception_data"] = body.Trace.Exception.Data;
+            //merge exception data dictionaries to list of keyValues pairs
+            var keyValuePairs = body.TraceChain.Where(tm => tm.Exception.Data != null).SelectMany(tm => tm.Exception.Data);
+                        
+            foreach (var keyValue in keyValuePairs)
+            {
+                //the keys in keyValuePairs aren't necessarily unique, so don't add but overwrite
+                model.Custom[keyValue.Key.ToString()] = keyValue.Value;
+            }
 
             model.Title = message;
 

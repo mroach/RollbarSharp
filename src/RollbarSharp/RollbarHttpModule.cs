@@ -17,7 +17,12 @@ namespace RollbarSharp
         private static void SendError(object sender, EventArgs e)
         {
             var application = (HttpApplication) sender;
-            new RollbarClient().SendException(application.Server.GetLastError().GetBaseException());
+            var ex = application.Server.GetLastError();
+
+            if (ex is HttpUnhandledException)
+                ex = ex.InnerException;
+
+            new RollbarClient().SendException(ex);
         }
 
     }
