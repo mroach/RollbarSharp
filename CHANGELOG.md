@@ -1,3 +1,11 @@
+## 0.3.2.0 (2015-02-27)
+
+* Capture IP address of application sending report
+* Added support for sending innerexceptions to Rollbar
+* Add code_version field for Rollbar resolutions
+* added userParam for callbacks
+
+
 ## 0.3.1.0 (2013-12-14)
 
 * Added 'Context' field to the data model
