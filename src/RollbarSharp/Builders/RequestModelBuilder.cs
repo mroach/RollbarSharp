@@ -50,7 +50,7 @@ namespace RollbarSharp.Builders
             // that will be the true remote IP of a user behind a proxy server or load balancer
             m.UserIp = IpFromXForwardedFor(request) ?? request.UserHostAddress;
 
-            m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Value.ToString());
+            m.Parameters = request.RequestContext.RouteData.Values.ToDictionary(v => v.Key, v => v.Describe());
 
             if (scrubParams != null)
             {

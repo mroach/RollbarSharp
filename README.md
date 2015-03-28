@@ -1,7 +1,7 @@
 # RollbarSharp
 
 [![Build status](https://ci.appveyor.com/api/projects/status/m8wevja31t9fh2i3?svg=true)](https://ci.appveyor.com/project/AlbertoMonteiro/rollbarsharp)
-[![NuGet version](https://badge.fury.io/nu/Rollbarshap.png)](http://badge.fury.io/nu/Rollbarshap)
+[![NuGet version](https://badge.fury.io/nu/Rollbarsharp.png)](http://badge.fury.io/nu/Rollbarsharp)
 
 
 .NET bindings for [Rollbar](http://www.rollbar.com).
