@@ -29,16 +29,5 @@ namespace RollbarSharp.Builders
 
             return new ServerModel { Host = host, Root = root, Machine = machine, Software = software };
         }
-
-        /// <summary>
-        /// Create a <see cref="ServerModel"/> using the current <see cref="HttpRequest"/>
-        /// </summary>
-        /// <returns></returns>
-        public static ServerModel CreateFromCurrentRequest()
-        {
-            var cx = HttpContext.Current;
-
-            return cx == null ? new ServerModel() : CreateFromHttpRequest(cx.Request);
-        }
     }
 }

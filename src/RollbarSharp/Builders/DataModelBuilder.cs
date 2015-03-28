@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
 using RollbarSharp.Serialization;
 
 namespace RollbarSharp.Builders
@@ -65,12 +66,52 @@ namespace RollbarSharp.Builders
 
             model.Notifier = NotifierModelBuilder.CreateFromAssemblyInfo();
 
-            model.Request = RequestModelBuilder.CreateFromCurrentRequest(Configuration.ScrubParams);
-            model.Server = ServerModelBuilder.CreateFromCurrentRequest();
+            var currentHttpRequest = GetCurrentHttpRequest();
+
+            if (currentHttpRequest == null)
+            {
+                model.Request = new RequestModel();
+                model.Server = new ServerModel();
+                model.Person = new PersonModel();
+            }
+            else
+            {
+                model.Request = RequestModelBuilder.CreateFromHttpRequest(currentHttpRequest, HttpContext.Current.Session, Configuration.ScrubParams);
+                model.Server = ServerModelBuilder.CreateFromHttpRequest(currentHttpRequest);
+                model.Person = PersonModelBuilder.CreateFromHttpRequest(currentHttpRequest);                
+            }
+
             model.Server.GitSha = Configuration.GitSha;
-            model.Person = PersonModelBuilder.CreateFromCurrentRequest();
             
             return model;
+        }
+
+        /// <summary>
+        /// Returns the current HttpRequest. If not available, returns null
+        /// </summary>
+        /// <returns></returns>
+        private static HttpRequest GetCurrentHttpRequest()
+        {
+            var cx = HttpContext.Current;
+            HttpRequest req = null;
+            
+            if (cx != null)
+            {
+                
+                //In the Application_Start HttpContext.Request is not available. 
+                //Instead of HttpContext.Request returning null, it throws an exception. So we swallow the exception here.
+                try
+                {
+                    req = cx.Request;
+                }
+                catch (HttpException)
+                {
+
+                }
+
+            }
+
+            return req;
         }
 
         /// <summary>
