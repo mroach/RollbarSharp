@@ -15,7 +15,7 @@ namespace RollbarSharp
     /// with Rollbar. There shouldn't be any need for them to deal
     /// with any objects aside from this
     /// </summary>
-    public class RollbarClient
+    public class RollbarClient : IRollbarClient
     {
         /// <summary>
         /// Signature for the handler fired when the request is complete
