@@ -74,9 +74,10 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendCriticalException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendCriticalException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendException(ex, title, "critical", modelAction);
+            return SendException(ex, title, "critical", modelAction);
         }
 
         /// <summary>
@@ -85,9 +86,10 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendErrorException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendErrorException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendException(ex, title, "error", modelAction);
+            return SendException(ex, title, "error", modelAction);
         }
 
         /// <summary>
@@ -96,9 +98,10 @@ namespace RollbarSharp
         /// <param name="ex"></param>
         /// <param name="title"></param>
         /// <param name="modelAction"></param>
-        public void SendWarningException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendWarningException(Exception ex, string title = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendException(ex, title, "warning", modelAction);
+           return SendException(ex, title, "warning", modelAction);
         }
 
         /// <summary>
@@ -109,14 +112,15 @@ namespace RollbarSharp
         /// <param name="title"></param>
         /// <param name="level">Default is "error". "critical" and "warning" may also make sense to use.</param>
         /// <param name="modelAction"></param>
-        public void SendException(Exception ex, string title = null, string level = "error", Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendException(Exception ex, string title = null, string level = "error", Action<DataModel> modelAction = null, object userParam = null)
         {
             var notice = NoticeBuilder.CreateExceptionNotice(ex, title, level);
             if (modelAction != null)
             {
                 modelAction(notice);
             }
-            Send(notice, userParam);
+            return Send(notice, userParam);
         }
 
         /// <summary>
@@ -125,9 +129,10 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendCriticalMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendCriticalMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "critical", customData, modelAction, userParam);
+            return SendMessage(message, "critical", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -136,9 +141,10 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendErrorMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendErrorMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "error", customData, modelAction, userParam);
+            return SendMessage(message, "error", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -147,9 +153,10 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendWarningMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendWarningMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "warning", customData, modelAction, userParam);
+            return SendMessage(message, "warning", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -158,9 +165,10 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendInfoMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendInfoMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "info", customData, modelAction, userParam);
+            return SendMessage(message, "info", customData, modelAction, userParam);
         }
 
         /// <summary>
@@ -169,9 +177,10 @@ namespace RollbarSharp
         /// <param name="message"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendDebugMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendDebugMessage(string message, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
-            SendMessage(message, "debug", customData, modelAction);
+            return SendMessage(message, "debug", customData, modelAction);
         }
 
         /// <summary>
@@ -181,20 +190,21 @@ namespace RollbarSharp
         /// <param name="level"></param>
         /// <param name="customData"></param>
         /// <param name="modelAction"></param>
-        public void SendMessage(string message, string level, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
+        /// <param name="userParam"></param>
+        public Task SendMessage(string message, string level, IDictionary<string, object> customData = null, Action<DataModel> modelAction = null, object userParam = null)
         {
             var notice = NoticeBuilder.CreateMessageNotice(message, level, customData);
             if (modelAction != null)
             {
                 modelAction(notice);
             }
-            Send(notice, userParam);
+            return Send(notice, userParam);
         }
 
-        public void Send(DataModel data, object userParam)
+        public Task Send(DataModel data, object userParam)
         {
             var payload = new PayloadModel(Configuration.AccessToken, data);
-            HttpPost(payload, userParam);
+            return HttpPost(payload, userParam);
         }
 
         /// <summary>
@@ -207,15 +217,15 @@ namespace RollbarSharp
             return JsonConvert.SerializeObject(data, Configuration.JsonSettings);
         }
 
-        protected void HttpPost(PayloadModel payload, object userParam)
+        protected Task HttpPost(PayloadModel payload, object userParam)
         {
             var payloadString = Serialize(payload);
-            HttpPost(payloadString, userParam);
+            return HttpPost(payloadString, userParam);
         }
 
-        protected void HttpPost(string payload, object userParam)
+        protected Task HttpPost(string payload, object userParam)
         {
-            Task.Factory.StartNew(() => HttpPostAsync(payload, userParam));
+            return Task.Factory.StartNew(() => HttpPostAsync(payload, userParam));
         }
 
         protected void HttpPostAsync(string payload, object userParam)
