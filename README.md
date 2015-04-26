@@ -1,7 +1,8 @@
 # RollbarSharp
 
 [![Build status](https://ci.appveyor.com/api/projects/status/m8wevja31t9fh2i3?svg=true)](https://ci.appveyor.com/project/AlbertoMonteiro/rollbarsharp)
-[![NuGet version](https://badge.fury.io/nu/Rollbarsharp.png)](http://badge.fury.io/nu/Rollbarsharp)
+[![NuGet version](http://img.shields.io/nuget/v/Rollbarsharp.svg)](http://www.nuget.org/packages/Boleto.Net/)
+[![Nuget downloads](http://img.shields.io/nuget/dt/Rollbarsharp.svg)](http://www.nuget.org/packages/Boleto.Net/)
 
 
 .NET bindings for [Rollbar](http://www.rollbar.com).
