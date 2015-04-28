@@ -8,12 +8,14 @@ var version = assembly.GetName().Version.ToString();
 Console.WriteLine("Packing version {0}", version);
 
 var pInfo = new ProcessStartInfo("nuget", string.Format("pack -Version {0}", version)) { WorkingDirectory = @"..\src\RollbarSharp\" };
-var p = new Process { StartInfo = pInfo };
-p.Start();
+Process.Start(pInfo).WaitForExit();
+Console.WriteLine("nupkg created");
 
-//var path = @"..\src\RollbarSharp\RollbarSharp.nuspec";
-//var doc = XDocument.Load(path);
-//var versionEle = doc.Descendants().FirstOrDefault(x => x.Name.LocalName == "version");
-//versionEle.Value = version;
-//doc.Save(path);
-Console.WriteLine("Nuget packed");
+Console.WriteLine("What's your Api Key?");
+var apiKey = Console.ReadLine();
+var arguments = string.Format("push RollbarSharp.{0}.nupkg -ApiKey {1}", version, apiKey);
+Console.WriteLine("Executing nuget {0}", arguments);
+pInfo = new ProcessStartInfo("nuget", arguments) { WorkingDirectory = @"..\src\RollbarSharp\" };
+Console.WriteLine("Pushing new version");
+Process.Start(pInfo).WaitForExit();
+Console.WriteLine("New version({0}) pushed", version);
