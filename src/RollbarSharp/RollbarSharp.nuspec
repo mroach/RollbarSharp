@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>RollbarSharp</id>
+    <version>0.3.4.0</version>
+    <title>RollbarSharp</title>
+    <authors>Michael Roach,Patrick Wyatt,Alberto Monteiro,richardversluis</authors>
+    <owners>Michael Roach</owners>
+    <licenseUrl>https://github.com/mroach/RollbarSharp/blob/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/mroach/rollbarsharp</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Bindings for the Rollbar (rollbar.com) error reporting system</description>
+    <language>en-US</language>
+    <tags>rollbar</tags>
+  </metadata>
+  <files>
+    <file src="\bin\Debug\RollbarSharp.dll" target="lib\net40\RollbarSharp.dll" />
+  </files>
+</package>

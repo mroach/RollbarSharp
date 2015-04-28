@@ -129,25 +129,15 @@ You'll need to add the [NLog.RollbarSharp](https://github.com/mroach/NLog.Rollba
 
 ## Building
 
-I'm using [Albacore](http://albacorebuild.net/) for managing the build and bundling process. You'll need Ruby on your system to use it.
+I'm using [ScriptCs](http://scriptcs.net/) for managing the build process.
 
-Installing the necessary gems (you only need to do this once):
-
-```
-gem install albacore version_bumper
-```
-
-Fetch nuget dependencies (from the `build` directory):
+To build go to **build** folder and then run this command:
 
 ```
-rake fetch_packages
+scriptcs -script build.csx
 ```
 
-And finally, building:
-
-```
-rake build
-```
+After that, upload new **RollbarSharp.{version}.nupkg** to nuget.
 
 ## TODO
 
