@@ -30,9 +30,17 @@ namespace RollbarSharp.Builders
             m.PostParameters = request.Form.ToDictionary();
 
             // add posted files to the post collection
-            if (request.Files.Count > 0)
-                foreach (var file in request.Files.Describe())
-                    m.PostParameters.Add(file.Key, "FILE: " + file.Value);
+            try
+            {
+                if (request.Files.Count > 0)
+                    foreach (var file in request.Files.Describe())
+                        m.PostParameters.Add(file.Key, "FILE: " + file.Value);
+            }
+            catch (HttpException)
+            {
+                // Files from request could not be read here because they are streamed
+                // and have been read earlier by e.g. WCF Rest Service or Open RIA Services
+            }
 
             // if the X-Forwarded-For header exists, use that as the user's IP.
             // that will be the true remote IP of a user behind a proxy server or load balancer
