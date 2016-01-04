@@ -44,28 +44,33 @@ namespace RollbarSharp.Builders
                 if (lineNumber < 0)
                     lineNumber = 0;
 
-				string methodName;
+                string methodName;
 
-				//At least on Mono 4.2.1: on reflection call frame.GetMethod() can be null
-				if (method != null) {
-					// file names aren't always available, so use the type name instead, if possible
-					if (string.IsNullOrEmpty(fileName)) {
-						fileName = method.ReflectedType != null
+                //At least on Mono 4.2.1: on reflection call frame.GetMethod() can be null
+                if (method != null)
+                {
+                    // file names aren't always available, so use the type name instead, if possible
+                    if (string.IsNullOrEmpty(fileName))
+                    {
+                        fileName = method.ReflectedType != null
 	                                   ? method.ReflectedType.FullName
 	                                   : "(unknown)";
-					}
+                    }
 									
-					methodName = method.Name;
+                    methodName = method.Name;
 
-					// add method parameters to the method name. helpful for resolving overloads.
-					var methodParams = method.GetParameters();
-					if (methodParams.Length > 0) {
-						var paramDesc = string.Join(", ", methodParams.Select(p => p.ParameterType + " " + p.Name));
-						methodName = methodName + "(" + paramDesc + ")";
-					}
-				} else {
-					methodName = "(unknown)";
-				}
+                    // add method parameters to the method name. helpful for resolving overloads.
+                    var methodParams = method.GetParameters();
+                    if (methodParams.Length > 0)
+                    {
+                        var paramDesc = string.Join(", ", methodParams.Select(p => p.ParameterType + " " + p.Name));
+                        methodName = methodName + "(" + paramDesc + ")";
+                    }
+                }
+                else
+                {
+                    methodName = "(unknown)";
+                }
 
                 lines.Add(new FrameModel(fileName, lineNumber, methodName));
             }
