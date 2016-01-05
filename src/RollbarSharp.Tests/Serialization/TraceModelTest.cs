@@ -2,6 +2,7 @@
 using System.Linq;
 using NUnit.Framework;
 using RollbarSharp.Builders;
+using System.Reflection;
 
 namespace RollbarSharp.Tests.Serialization
 {
@@ -35,6 +36,7 @@ namespace RollbarSharp.Tests.Serialization
                 Assert.Greater(model.Frames.Length, 0);
             }
         }
+
         [Test]
         public void when_creating_from_thrown_exception_should_have_Exception_model()
         {
@@ -49,11 +51,32 @@ namespace RollbarSharp.Tests.Serialization
             }
         }
 
+        [Test()]
+        public void when_creating_from_thrown_within_reflection_call_exception_should_have_Exception_model()
+        {
+            var method = this.GetType().GetMethod("MethodWithException");
+            try
+            {
+                method.Invoke(this, new object[]{ null });
+                Assert.Fail("The previous call must throw an exception");
+            }
+            catch (Exception ex)
+            {
+                var model = TraceChainModelBuilder.CreateFromException(ex).FirstOrDefault();
+                Assert.IsNotNull(model.Exception);
+            }
+        }
+
         private int GenerateException(string noparam)
         {
             var x = 0;
             var q = 1 / x;
             return q;
+        }
+
+        public void MethodWithException(string noparam)
+        {
+            throw new ArgumentException("Test exception");
         }
     }
 }
