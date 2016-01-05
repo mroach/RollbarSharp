@@ -58,7 +58,7 @@ namespace RollbarSharp.Tests.Serialization
             try
             {
                 method.Invoke(this, new object[]{ null });
-                Assert.Fail("La llamada anterior debe lanzar una excepción");
+                Assert.Fail("The previous call must throw an exception");
             }
             catch (Exception ex)
             {
