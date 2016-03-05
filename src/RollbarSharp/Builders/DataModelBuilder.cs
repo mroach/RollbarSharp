@@ -72,7 +72,7 @@ namespace RollbarSharp.Builders
             {
                 model.Request = new RequestModel();
                 model.Server = new ServerModel();
-                model.Person = new PersonModel();
+                model.Person = PersonModelBuilder.CreateFromEnvironment();
             }
             else
             {
