@@ -72,7 +72,11 @@ namespace RollbarSharp.Builders
             {
                 model.Request = new RequestModel();
                 model.Server = new ServerModel();
-                model.Person = new PersonModel();
+
+                //Obtain person information on non-hosted environment only
+                model.Person = System.Web.Hosting.HostingEnvironment.IsHosted
+                                ? new PersonModel()
+                                : PersonModelBuilder.CreateFromEnvironment();
             }
             else
             {
