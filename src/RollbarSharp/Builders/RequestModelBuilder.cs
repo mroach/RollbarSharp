@@ -27,7 +27,7 @@ namespace RollbarSharp.Builders
             m.Session = session.ToDictionary();
 
             m.QueryStringParameters = request.QueryString.ToDictionary();
-            m.PostParameters = request.Form.ToDictionary();
+            m.PostParameters = request.Unvalidated.Form.ToDictionary();
 
             // add posted files to the post collection
             try
