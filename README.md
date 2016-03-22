@@ -10,7 +10,7 @@
 
 I'm not affiliated with Rollbar, I just like their service.
 
-As of now this binding is only for .NET 4. If there's a widespread desire for .NET 2.0 support, I'd consider doing that. There's also a dependency on `System.Web.Routing`, so you'll at least need ASP.NET MVC installed on the system.
+Minimum version is .NET 4.5. There's also a dependency on `System.Web.Routing`, so you'll at least need ASP.NET MVC installed on the system.
 
 ## Installation
 
