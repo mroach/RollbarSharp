@@ -10,10 +10,7 @@
         <projectUrl>https://github.com/mroach/rollbarsharp</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>$description$</description>
-        <releaseNotes>* Capture IP address of application sending report
-* Added support for sending innerexceptions to Rollbar
-* Add code_version field for Rollbar resolutions
-* added userParam for callbacks</releaseNotes>
+        <releaseNotes>https://github.com/mroach/RollbarSharp/releases/tag/$version$</releaseNotes>
         <language>en-US</language>
         <tags>rollbar</tags>
     </metadata>
