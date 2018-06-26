@@ -1,3 +1,7 @@
+# NOTE: No longer in active development
+
+The Rollbar team has done an excellent job creating an official .NET client over at https://github.com/rollbar/Rollbar.NET. It's recommened to use this for new projects and to migrate existing projects to the client. This project is no longer maintained. Thanks to everyone who contributed over the life of this project.
+
 # RollbarSharp
 
 [![Build status](https://ci.appveyor.com/api/projects/status/m8wevja31t9fh2i3?svg=true)](https://ci.appveyor.com/project/AlbertoMonteiro/rollbarsharp)
